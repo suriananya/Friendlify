@@ -4,7 +4,6 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/CAUserLogin/pom.xml" />
         <option value="$PROJECT_DIR$/SpotifyUserLogin/pom.xml" />
       </list>
     </option>

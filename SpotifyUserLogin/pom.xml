@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>edu.csc207</groupId>
-    <artifactId>homework-5</artifactId>
+    <artifactId>final-project</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -15,7 +15,6 @@
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
-
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
