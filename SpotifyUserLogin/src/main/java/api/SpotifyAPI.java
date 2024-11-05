@@ -8,7 +8,10 @@ import java.io.IOException;
 public class SpotifyAPI {
     private static final OkHttpClient client = new OkHttpClient();
 
+    private final String accessToken;
+
     public SpotifyAPI() {
+        this.accessToken = requestToken();
     }
 
     private static String requestToken() {
@@ -38,7 +41,12 @@ public class SpotifyAPI {
         return "";
     }
 
+    public String getAccessToken() {
+        return accessToken;
+    }
+
     public static void main(String[] args) {
-        System.out.println(requestToken());
+        SpotifyAPI api = new SpotifyAPI();
+        System.out.println(api.getAccessToken());
     }
 }
