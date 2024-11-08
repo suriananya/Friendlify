@@ -5,6 +5,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/**
+ * A collection of functions required to interact with the Spotify API
+ */
 public class SpotifyAPI implements SpotifyDatabase{
     private static final OkHttpClient client = new OkHttpClient();
     private final String accessToken = requestToken().getString("access_token");
@@ -43,8 +46,8 @@ public class SpotifyAPI implements SpotifyDatabase{
     }
 
     /**
-     * A method that extract the access token from the associated raw Spotify response
-     * @return the access token
+     * A method that extract the access token from the associated raw Spotify response.
+     * @return the access token.
      */
     public String getClientAccessToken() {
         return accessToken;
@@ -54,5 +57,20 @@ public class SpotifyAPI implements SpotifyDatabase{
     public static void main(String[] args) {
         SpotifyAPI api = new SpotifyAPI();
         System.out.println(api.getClientAccessToken());
+    }
+
+    @Override
+    public JSONObject getPlaylistItems(String playlistID) {
+        return null;
+    }
+
+    @Override
+    public JSONObject getCurrentUserPlaylists() {
+        return null;
+    }
+
+    @Override
+    public JSONObject getUserPlaylists(String userID) {
+        return null;
     }
 }
