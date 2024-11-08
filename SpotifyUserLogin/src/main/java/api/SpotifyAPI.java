@@ -5,17 +5,18 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class SpotifyAPI {
+public class SpotifyAPI implements SpotifyDatabase{
     private static final OkHttpClient client = new OkHttpClient();
+    private final String accessToken = requestToken().getString("access_token");
 
-    private final String accessToken;
-
-    public SpotifyAPI() {
-        this.accessToken = requestToken();
-    }
-
-    private static String requestToken() {
+    /**
+     * We need an access token to use Spotify API features.
+     * This requests the related information directly from the API.
+     * @return the response from Spotify requesting an access token, if possible. Otherwise, an empty JSONObject
+     */
+    private static JSONObject requestToken() {
         // Define the parameters for the request body
+        // Technically I should not be sharing any of this information, but I cannot be bothered to hide it right now
         RequestBody requestBody = new FormBody.Builder()
                 .add("grant_type", "client_credentials")
                 .add("client_id", "53ee2a266cd542acaf19190e2ec3da41")
@@ -33,20 +34,25 @@ public class SpotifyAPI {
             // Collect the response from the API requests, and return the access token
             Response response = client.newCall(postRequest).execute();
             assert response.body() != null;
-            JSONObject jsonObject = new JSONObject(response.body().string());
-            return jsonObject.getString("access_token");
+            return new JSONObject(response.body().string());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "";
+        // If there's an error, return an empty JSONObject
+        return new JSONObject();
     }
 
-    public String getAccessToken() {
+    /**
+     * A method that extract the access token from the associated raw Spotify response
+     * @return the access token
+     */
+    public String getClientAccessToken() {
         return accessToken;
     }
 
+    // Initializing a main function to help test code
     public static void main(String[] args) {
         SpotifyAPI api = new SpotifyAPI();
-        System.out.println(api.getAccessToken());
+        System.out.println(api.getClientAccessToken());
     }
 }
