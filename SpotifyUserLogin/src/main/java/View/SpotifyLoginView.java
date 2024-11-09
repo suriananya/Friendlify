@@ -132,9 +132,6 @@ public class SpotifyLoginView extends JPanel {
         }
     }
 
-    public String getViewName() {
-        return "Spotify Login";
-    }
 
     public JButton getLoginButton() {
         return logInButton;

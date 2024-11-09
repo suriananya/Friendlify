@@ -27,10 +27,6 @@ public class LoginViewModel {
         support.addPropertyChangeListener(listener);
     }
 
-    // Remove a property change listener
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        support.removePropertyChangeListener(listener);
-    }
 
     // Clears the state to an empty one
     public void clearState() {
