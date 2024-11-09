@@ -45,6 +45,13 @@ public class SpotifyAPI implements SpotifyDatabase{
         return new JSONObject();
     }
 
+    public boolean validateCredentials(String username, String password) {
+        // Example API call logic for validating credentials
+        System.out.println("Validating credentials for user: " + username);
+        // Return true/false based on response
+        return true; // Replace with actual validation logic
+    }
+
     /**
      * A method that extract the access token from the associated raw Spotify response.
      * @return the access token.
