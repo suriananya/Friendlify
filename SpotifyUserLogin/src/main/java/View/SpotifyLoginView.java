@@ -115,15 +115,21 @@ public class SpotifyLoginView extends JPanel {
 
     // Handle property change events to update the view
     private void propertyChange(java.beans.PropertyChangeEvent evt) {
-        LoginState state = (LoginState) evt.getNewValue();
-        setFields(state);
-        usernameErrorField.setText(state.getLoginError());
+        if ("state".equals(evt.getPropertyName())) {
+            LoginState state = (LoginState) evt.getNewValue();
+            setFields(state);
+            usernameErrorField.setText(state.getLoginError());
+        }
     }
 
     // Update fields based on LoginState
     private void setFields(LoginState state) {
-        usernameInputField.setText(state.getUsername());
-        passwordInputField.setText(state.getPassword());
+        if (!usernameInputField.getText().equals(state.getUsername())) {
+            usernameInputField.setText(state.getUsername());
+        }
+        if (!new String(passwordInputField.getPassword()).equals(state.getPassword())) {
+            passwordInputField.setText(state.getPassword());
+        }
     }
 
     public String getViewName() {

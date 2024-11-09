@@ -1,7 +1,6 @@
 package interface_adapter.login;
 
-import interface_adapter.login.LoginViewModel;
-import interface_adapter.login.LoginState;
+import Use_case.LoginResult;
 import Use_case.LoginUseCase;
 import View.SpotifyLoginView;
 import java.awt.event.ActionEvent;
@@ -34,14 +33,14 @@ public class LoginController implements ActionListener {
         String username = currentState.getUsername();
         String password = currentState.getPassword();
 
-        // Perform login via the LoginUseCase
-        boolean isAuthenticated = loginUseCase.execute(username, password);
+        // Perform login via the LoginUseCase and get a detailed result
+        LoginResult result = loginUseCase.execute(username, password);
 
         // Update the LoginState based on authentication result
-        if (isAuthenticated) {
+        if (result.isSuccess()) {
             currentState.setLoginError(""); // Clear error message
         } else {
-            currentState.setLoginError("Invalid credentials");
+            currentState.setLoginError(result.getErrorMessage());
         }
 
         // Update the LoginViewModel with the new state
@@ -50,8 +49,6 @@ public class LoginController implements ActionListener {
 
     private void handleCancel() {
         // Reset the login fields and clear errors
-        LoginState emptyState = new LoginState("", "", "");
-        loginViewModel.setState(emptyState);
+        loginViewModel.clearState();
     }
 }
-

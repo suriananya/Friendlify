@@ -1,34 +1,35 @@
-import api.SpotifyAPI;
-import Use_case.LoginUseCase;
-import interface_adapter.login.LoginViewModel;
-import View.SpotifyLoginView;
+package main;
+
 import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.login.LoginState;
+import Use_case.LoginUseCase;
+import View.SpotifyLoginView;
 
 import javax.swing.*;
 
-
-
 public class Main {
     public static void main(String[] args) {
-        // Create instances of dependencies
-        SpotifyAPI spotifyAPI = new SpotifyAPI();
-        LoginUseCase loginUseCase = new LoginUseCase(spotifyAPI);
-        LoginViewModel loginViewModel = new LoginViewModel();
+        // Set up the initial state, view model, and use case
+        LoginState initialState = new LoginState("", "", "");
+        LoginViewModel loginViewModel = new LoginViewModel(initialState);
+        LoginUseCase loginUseCase = new LoginUseCase();
 
-        // Initialize the login view (GUI)
+        // Set up the view and controller
         SpotifyLoginView loginView = new SpotifyLoginView(loginViewModel, null);
-
-        // Initialize the controller and pass the login view
         LoginController loginController = new LoginController(loginView, loginViewModel, loginUseCase);
 
-        // Set the action listener for the login view button (pass the controller's action listener)
-        loginView = new SpotifyLoginView(loginViewModel, loginController);
+        // Add the login action listener to the view
+        loginView.getLoginButton().addActionListener(loginController);
+        loginView.getCancelButton().addActionListener(loginController);
 
-        // Create a frame and add the login view
+        // Create the frame to display the login view
         JFrame frame = new JFrame("Spotify Login");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(loginView);
+        frame.getContentPane().add(loginView);
         frame.pack();
+        frame.setLocationRelativeTo(null);  // Center the frame
         frame.setVisible(true);
     }
 }
+
