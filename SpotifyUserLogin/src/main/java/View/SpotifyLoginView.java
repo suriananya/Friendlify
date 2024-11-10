@@ -24,8 +24,10 @@ public class SpotifyLoginView extends JPanel {
 
     private final JButton logInButton;
     private final JButton cancelButton;
+    private final JFrame parentFrame;
 
-    public SpotifyLoginView(LoginViewModel loginViewModel, ActionListener loginActionListener) {
+    public SpotifyLoginView(LoginViewModel loginViewModel, ActionListener loginActionListener, JFrame parentFrame) {
+        this.parentFrame = parentFrame; // Keep track of the parent frame
         loginViewModel.addPropertyChangeListener(this::propertyChange);
 
         // Set up the UI components
@@ -39,7 +41,7 @@ public class SpotifyLoginView extends JPanel {
         JPanel buttons = new JPanel();
 
         logInButton = new JButton("Log In");
-        logInButton.addActionListener(loginActionListener);
+        logInButton.addActionListener(e -> handleLogin(loginViewModel)); // Call a custom handler method
         buttons.add(logInButton);
 
         cancelButton = new JButton("Cancel");
@@ -104,6 +106,28 @@ public class SpotifyLoginView extends JPanel {
         this.add(buttons);                 // Add the buttons panel (Log In and Cancel)
     }
 
+    // Action listener for the Log In button
+    private void handleLogin(LoginViewModel loginViewModel) {
+        // Here you can implement login logic
+        boolean isAuthenticated = authenticate(loginViewModel.getState().getUsername(), new String(passwordInputField.getPassword()));
+        if (isAuthenticated) {
+            // Hide the current view and show the main application view
+            parentFrame.getContentPane().removeAll();
+            parentFrame.getContentPane().add(new MainAppView()); // Replace MainAppView with your actual main view class
+            parentFrame.revalidate();
+            parentFrame.repaint();
+        } else {
+            // Show error message if authentication fails
+            usernameErrorField.setText("Invalid username or password.");
+        }
+    }
+
+    // Mock authentication method
+    private boolean authenticate(String username, String password) {
+        // Replace with real authentication logic as needed
+        return "user".equals(username) && "pass".equals(password);
+    }
+
     // Action listener for the cancel button
     private void handleCancel(ActionEvent evt) {
         // Reset the input fields
@@ -131,7 +155,6 @@ public class SpotifyLoginView extends JPanel {
             passwordInputField.setText(state.getPassword());
         }
     }
-
 
     public JButton getLoginButton() {
         return logInButton;
