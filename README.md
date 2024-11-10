@@ -3,7 +3,7 @@ Team Members & Github usernames:
 <br /> Jack Wang: JWang1414
 <br /> Karen Wong: Feiwunkaren
 <br /> June Vo : juneylvo
-<br />Agrata
+<br />Agrata : agrata69
 <br />Ananya : suriananya
 <br />
 <br />
@@ -17,3 +17,5 @@ User stories:
 <br/> As a user, I want to access playlists from friends or other users, listen to songs from their playlists, and rate or give feedback on their song recommendations, so I can connect with others through shared music experiences
 
 <br/>As a user, I want to log in with my Spotify account to access my saved playlists, recently played tracks, and favorite songs directly in the app, so I have personalized information at hand
+
+<br/> As a user, I want to create and share collaborative playlists with friends in real time, so we can build a mix of songs together and enhance our shared listening experience.
