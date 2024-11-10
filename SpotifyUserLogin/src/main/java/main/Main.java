@@ -15,8 +15,11 @@ public class Main {
         LoginViewModel loginViewModel = new LoginViewModel(initialState);
         LoginUseCase loginUseCase = new LoginUseCase();
 
-        // Set up the view and controller
-        SpotifyLoginView loginView = new SpotifyLoginView(loginViewModel, null);
+        JFrame frame = new JFrame("Spotify Login");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Set up the view and controller, passing the frame reference to the view
+        SpotifyLoginView loginView = new SpotifyLoginView(loginViewModel, null, frame);
         LoginController loginController = new LoginController(loginView, loginViewModel, loginUseCase);
 
         // Add the login action listener to the view
@@ -24,8 +27,6 @@ public class Main {
         loginView.getCancelButton().addActionListener(loginController);
 
         // Create the frame to display the login view
-        JFrame frame = new JFrame("Spotify Login");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(loginView);
         frame.pack();
         frame.setLocationRelativeTo(null);  // Center the frame
