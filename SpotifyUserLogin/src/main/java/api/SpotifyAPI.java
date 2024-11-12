@@ -71,6 +71,11 @@ public class SpotifyAPI implements SpotifyDatabase{
         return null;
     }
 
+    @Override
+    public JSONObject getCurrentUserProfile() {
+        return null;
+    }
+
     /**
      * A method that extract the access token from the associated raw Spotify response.
      * @return the access token.
