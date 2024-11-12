@@ -8,14 +8,9 @@ Team Members & Github usernames:
 <br />
 <br />
 User stories:
-<br /> Team Story: As a user, I want to see music recommendations based on my listening history, saved playlists, and recent searches, so I can discover new music that suits my tastes.
-
-<br />As a user, I want to view my most listened-to songs and artists over time, including the past month, year, and all-time, so I can reflect on my listening habits.
-
-<br />As a user, I want to search for songs, albums, and artists by name or genre, and see relevant information like album artwork and release dates, so I can explore new music easily
-
-<br/> As a user, I want to access playlists from friends or other users, listen to songs from their playlists, and rate or give feedback on their song recommendations, so I can connect with others through shared music experiences
-
-<br/>As a user, I want to log in with my Spotify account to access my saved playlists, recently played tracks, and favorite songs directly in the app, so I have personalized information at hand
-
-<br/> As a user, I want to create and share collaborative playlists with friends in real time, so we can build a mix of songs together and enhance our shared listening experience.
+<br /> 1. Team Story: As a user, I want to be able to log into my Spotify account on this application to see my profile showcasing my username, playlists, preferred genres and preferred artists.
+<br /> 2. As a user, I want to edit my liked genres and artists for my friends to see [ ]
+<br /> 3. As a user I want to search for my friends by their usernames to see their profiles. [ ]
+<br /> 4. As a user, I want to have a “roulette” or “surprise me” option that randomizes a song from my friends for me to sample their music [ ]
+<br /> 5. As a user, I want to rate the songs my friends listen to [ ]
+<br /> 6. As a user, I want to add comments to songs my friends listen to [ ]
