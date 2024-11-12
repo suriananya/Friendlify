@@ -1,6 +1,6 @@
 package entities;
 
-import api.SpotifyAPI;
+import apiOld.SpotifyAPI;
 
 public class AuthenticateUser {
     private final SpotifyAPI api;
