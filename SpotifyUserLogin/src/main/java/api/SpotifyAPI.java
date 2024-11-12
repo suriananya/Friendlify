@@ -10,6 +10,11 @@ import java.io.IOException;
  */
 public class SpotifyAPI implements SpotifyDatabase{
     private static final OkHttpClient client = new OkHttpClient();
+
+    // Technically I should not be sharing any of this information, but I cannot be bothered to hide it right now
+    public static final String clientID = "53ee2a266cd542acaf19190e2ec3da41";
+    public static final String clientSecret = "0567ae1ac8e1415ba72f748808a69377";
+
     private final String accessToken = requestToken().getString("access_token");
 
     /**
@@ -19,11 +24,10 @@ public class SpotifyAPI implements SpotifyDatabase{
      */
     private static JSONObject requestToken() {
         // Define the parameters for the request body
-        // Technically I should not be sharing any of this information, but I cannot be bothered to hide it right now
         RequestBody requestBody = new FormBody.Builder()
                 .add("grant_type", "client_credentials")
-                .add("client_id", "53ee2a266cd542acaf19190e2ec3da41")
-                .add("client_secret", "0567ae1ac8e1415ba72f748808a69377")
+                .add("client_id", clientID)
+                .add("client_secret", clientSecret)
                 .build();
 
         // Create the POST request to collect the API token
@@ -52,20 +56,6 @@ public class SpotifyAPI implements SpotifyDatabase{
         return true; // Replace with actual validation logic
     }
 
-    /**
-     * A method that extract the access token from the associated raw Spotify response.
-     * @return the access token.
-     */
-    public String getClientAccessToken() {
-        return accessToken;
-    }
-
-    // Initializing a main function to help test code
-    public static void main(String[] args) {
-        SpotifyAPI api = new SpotifyAPI();
-        System.out.println(api.getClientAccessToken());
-    }
-
     @Override
     public JSONObject getPlaylistItems(String playlistID) {
         return null;
@@ -79,5 +69,19 @@ public class SpotifyAPI implements SpotifyDatabase{
     @Override
     public JSONObject getUserPlaylists(String userID) {
         return null;
+    }
+
+    /**
+     * A method that extract the access token from the associated raw Spotify response.
+     * @return the access token.
+     */
+    public String getClientAccessToken() {
+        return accessToken;
+    }
+
+    // Initializing a main function to help test code
+    public static void main(String[] args) {
+        SpotifyAPI api = new SpotifyAPI();
+        System.out.println(api.getClientAccessToken());
     }
 }
