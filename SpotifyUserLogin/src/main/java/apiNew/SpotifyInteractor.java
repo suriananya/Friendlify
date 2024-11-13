@@ -38,6 +38,10 @@ public class SpotifyInteractor {
             .setRefreshToken(refreshToken)
             .build();
 
+    /**
+     * Access token will expire after 1 hour.
+     * This method will refresh the user's access token so it can continue being used
+     */
     private static void authorizationCodeRefresh() {
         try {
             final AuthorizationCodeRefreshRequest authorizationCodeRefreshRequest =
@@ -52,6 +56,12 @@ public class SpotifyInteractor {
         }
     }
 
+    /**
+     * To access the SpotifyAPI, we need a user's access token. This token expires after 1 hour.
+     * To prevent their access token from expiring, we need a refresh token to refresh it.
+     * Using the authorization code pulled from the URI link,
+     * this method extracts and sets the user's current access and refresh tokens.
+     */
     private static void authorizationCode() {
         try {
             final AuthorizationCodeRequest authorizationCodeRequest = api.authorizationCode(code).build();
@@ -66,6 +76,10 @@ public class SpotifyInteractor {
         }
     }
 
+    /**
+     * Sends a link to the URI link required for the user to give authorization.
+     * We need this authorization so we are allowed to access the user's data.
+     */
     private static void authorizationCodeUri() {
         final AuthorizationCodeUriRequest authorizationCodeUriRequest = api.authorizationCodeUri()
                 .scope(applicationScope)
@@ -74,6 +88,10 @@ public class SpotifyInteractor {
 
         System.out.println("Application Authorization: " + uri.toString());
     }
+
+    /**
+     * Beyond this point, there should be only getter and setter methods
+     */
 
     public static void setCode(String code) {
         SpotifyInteractor.code = code;
