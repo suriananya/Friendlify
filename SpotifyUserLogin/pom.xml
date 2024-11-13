@@ -26,10 +26,14 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java -->
+        <dependency>
+            <groupId>se.michaelthelin.spotify</groupId>
+            <artifactId>spotify-web-api-java</artifactId>
+            <version>8.4.1</version>
+        </dependency>
 
     </dependencies>
-
-
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
