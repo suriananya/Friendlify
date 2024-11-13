@@ -1,6 +1,5 @@
-package api;
+package apiOld;
 
-import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -14,8 +13,8 @@ public abstract class AbstractSpotifyAPi {
     private static final OkHttpClient client = new OkHttpClient();
 
     // Technically I should not be sharing any of this information, but I cannot be bothered to hide it right now
-    public static final String clientID = "53ee2a266cd542acaf19190e2ec3da41";
-    public static final String clientSecret = "0567ae1ac8e1415ba72f748808a69377";
+    private static final String clientID = "53ee2a266cd542acaf19190e2ec3da41";
+    private static final String clientSecret = "0567ae1ac8e1415ba72f748808a69377";
 
     /**
      * We need an access token to use Spotify API features.
