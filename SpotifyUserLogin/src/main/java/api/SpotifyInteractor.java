@@ -109,14 +109,29 @@ public class SpotifyInteractor {
 
     // Main function to make testing easier
     public static void main(String[] args) {
+        /*
+        Login instructions
+        1. When you run this file, it will send you a link to authenticate your account.
+        2. Click on this link to authenticate your account.
+        3. Afterward, it will send you to a blank page, where you will receive a connection error.
+        4. Copy the link of the page you were sent to.
+        5. Paste it into the command line, and press enter.
+        6. From there, the code will generate for you an access and refresh token.
+        7. If you receive no errors. This means that you've logged in.
+         */
         Scanner scanner = new Scanner(System.in);
 
+        System.out.println("Click on this link below to authenticate your account.");
         authorizationCodeUri();
+
+        System.out.println("\nYou should have been lead to a page where you will receive a connection error.");
+        System.out.print("Copy the link to that page. Paste it here:");
         String fullLink = scanner.nextLine();
         setCode(fullLink.substring(28));
 
         authorizationCode();
         authorizationCodeRefresh();
+        System.out.println("Assuming you have received no errors, you have 'logged in'");
 
         scanner.close();
     }
