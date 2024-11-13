@@ -10,6 +10,7 @@ public class AuthenticateUser {
     public boolean authenticate(String username, String password) {
         // Logic to call the SpotifyAPI and verify credentials
 //        return api.validateCredentials(username, password);
+        return false;
     }
 }
 
