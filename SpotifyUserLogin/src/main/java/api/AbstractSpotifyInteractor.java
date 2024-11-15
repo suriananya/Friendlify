@@ -5,7 +5,11 @@ import se.michaelthelin.spotify.SpotifyHttpManager;
 
 import java.net.URI;
 
-public class AbstractSpotifyInteractor {
+/**
+ * A class to dictate and document the methods required for the SpotifyInteractor.
+ * Ideally, this class will help increase readability.
+ */
+public abstract class AbstractSpotifyInteractor {
     // Technically I should not be sharing any of this information, but I cannot be bothered to hide it right now
     private static final String clientID = "53ee2a266cd542acaf19190e2ec3da41";
     private static final String clientSecret = "0567ae1ac8e1415ba72f748808a69377";
