@@ -1,8 +1,6 @@
 package api;
 
 import org.apache.hc.core5.http.ParseException;
-import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
@@ -21,14 +19,14 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
      * Access token will expire after 1 hour.
      * This method will refresh the user's access token so it can continue being used
      */
-    private static void authorizationCodeRefresh() {
+    private void authorizationCodeRefresh() {
         try {
             final AuthorizationCodeRefreshRequest authorizationCodeRefreshRequest =
-                    api.authorizationCodeRefresh().build();
+                    this.api.authorizationCodeRefresh().build();
             final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRefreshRequest.execute();
 
             // Set access and refresh token for further "spotifyApi" object usage
-            setAccessToken(authorizationCodeCredentials.getAccessToken());
+            this.api.setAccessToken(authorizationCodeCredentials.getAccessToken());
 
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
@@ -41,14 +39,15 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
      * Using the authorization code pulled from the URI link,
      * this method extracts and sets the user's current access and refresh tokens.
      */
-    private static void authorizationCode() {
+    private void authorizationCode() {
         try {
-            final AuthorizationCodeRequest authorizationCodeRequest = api.authorizationCode(getCode()).build();
+            final AuthorizationCodeRequest authorizationCodeRequest =
+                    this.api.authorizationCode(this.getCode()).build();
             final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
 
             // Set access and refresh token for further "spotifyApi" object usage
-            setAccessToken(authorizationCodeCredentials.getAccessToken());
-            setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+            this.setAccessToken(authorizationCodeCredentials.getAccessToken());
+            this.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
 
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
@@ -59,8 +58,8 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
      * Sends a link to the URI link required for the user to give authorization.
      * We need this authorization so we are allowed to access the user's data.
      */
-    private static void authorizationCodeUri() {
-        final AuthorizationCodeUriRequest authorizationCodeUriRequest = api.authorizationCodeUri()
+    private void authorizationCodeUri() {
+        final AuthorizationCodeUriRequest authorizationCodeUriRequest = this.api.authorizationCodeUri()
                 .scope(applicationScope)
                 .build();
         final URI uri = authorizationCodeUriRequest.execute();
@@ -68,8 +67,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         System.out.println("Application Authorization: " + uri.toString());
     }
 
-    // Main function to make testing easier
-    public static void main(String[] args) {
+    public void login() {
         /*
         Login instructions
         1. When you run this file, it will send you a link to authenticate your account.
@@ -88,12 +86,18 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         System.out.println("\nYou should have been lead to a page where you will receive a connection error.");
         System.out.print("Copy the link to that page. Paste it here:");
         String fullLink = scanner.nextLine();
-        setCode(fullLink.substring(28));
+        this.setCode(fullLink.substring(28));
 
         authorizationCode();
         authorizationCodeRefresh();
         System.out.println("Assuming you have received no errors, you have 'logged in'");
 
         scanner.close();
+    }
+
+    // Main function to make testing easier
+    public static void main(String[] args) {
+        SpotifyInteractor interactor = new SpotifyInteractor();
+        interactor.login();
     }
 }
