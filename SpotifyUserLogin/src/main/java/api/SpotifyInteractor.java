@@ -62,7 +62,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         System.out.println("\nYou should have been lead to a page where you will receive a connection error.");
         System.out.print("Copy the link to that page. Paste it here:");
         String fullLink = scanner.nextLine();
-        this.setCode(fullLink.substring(28));
+        this.setCode(Utility.spliceString(fullLink,"code=",""));
 
         authorizationCode();
         authorizationCodeRefresh();
