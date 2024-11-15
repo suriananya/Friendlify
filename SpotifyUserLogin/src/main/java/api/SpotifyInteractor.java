@@ -15,11 +15,7 @@ import java.util.Scanner;
  * A class to help interact with the SpotifyAPI.
  */
 public class SpotifyInteractor extends AbstractSpotifyInteractor{
-    /**
-     * Access token will expire after 1 hour.
-     * This method will refresh the user's access token so it can continue being used
-     */
-    private void authorizationCodeRefresh() {
+    void authorizationCodeRefresh() {
         try {
             final AuthorizationCodeRefreshRequest authorizationCodeRefreshRequest =
                     this.api.authorizationCodeRefresh().build();
@@ -33,13 +29,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         }
     }
 
-    /**
-     * To access the SpotifyAPI, we need a user's access token. This token expires after 1 hour.
-     * To prevent their access token from expiring, we need a refresh token to refresh it.
-     * Using the authorization code pulled from the URI link,
-     * this method extracts and sets the user's current access and refresh tokens.
-     */
-    private void authorizationCode() {
+    void authorizationCode() {
         try {
             final AuthorizationCodeRequest authorizationCodeRequest =
                     this.api.authorizationCode(this.getCode()).build();
@@ -54,11 +44,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         }
     }
 
-    /**
-     * Sends a link to the URI link required for the user to give authorization.
-     * We need this authorization so we are allowed to access the user's data.
-     */
-    private void authorizationCodeUri() {
+    void authorizationCodeUri() {
         final AuthorizationCodeUriRequest authorizationCodeUriRequest = this.api.authorizationCodeUri()
                 .scope(applicationScope)
                 .build();
@@ -68,16 +54,6 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     public void login() {
-        /*
-        Login instructions
-        1. When you run this file, it will send you a link to authenticate your account.
-        2. Click on this link to authenticate your account.
-        3. Afterward, it will send you to a blank page, where you will receive a connection error.
-        4. Copy the link of the page you were sent to.
-        5. Paste it into the command line, and press enter.
-        6. From there, the code will generate for you an access and refresh token.
-        7. If you receive no errors. This means that you've logged in.
-         */
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Click on this link below to authenticate your account.");
