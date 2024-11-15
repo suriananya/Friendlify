@@ -18,46 +18,46 @@ public abstract class AbstractSpotifyInteractor {
     // Initialize important variables for app functionality
     protected static final String applicationScope =
             "user-follow-read user-library-read user-read-private playlist-read-private";
-    protected static String code;
-    protected static String accessToken;
-    protected static String refreshToken;
+    protected String code;
+    protected String accessToken;
+    protected String refreshToken;
 
     // Initialize the API wrapper class
-    protected static final SpotifyApi api = new SpotifyApi.Builder()
+    protected final SpotifyApi api = new SpotifyApi.Builder()
             .setClientId(clientID)
             .setClientSecret(clientSecret)
             .setRedirectUri(redirectUri)
-            .setAccessToken(accessToken)
-            .setRefreshToken(refreshToken)
+            .setAccessToken(this.getAccessToken())
+            .setRefreshToken(this.getRefreshToken())
             .build();
 
     /**
      * Beyond this point, there should be only getter and setter methods
      */
 
-    public static String getCode() {
+    public String getCode() {
         return code;
     }
 
-    public static String getAccessToken() {
+    public String getAccessToken() {
         return accessToken;
     }
 
-    public static String getRefreshToken() {
+    public String getRefreshToken() {
         return refreshToken;
     }
 
-    public static void setCode(String code) {
-        SpotifyInteractor.code = code;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public static void setAccessToken(String accessToken) {
-        SpotifyInteractor.accessToken = accessToken;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
         api.setAccessToken(accessToken);
     }
 
-    public static void setRefreshToken(String refreshToken) {
-        SpotifyInteractor.refreshToken = refreshToken;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
         api.setRefreshToken(refreshToken);
     }
 }
