@@ -31,6 +31,8 @@ public abstract class AbstractSpotifyInteractor {
             .setRefreshToken(this.getRefreshToken())
             .build();
 
+    // *** Methods beyond this point ***
+
     /**
      * Access token will expire after 1 hour.
      * This method will refresh the user's access token so it can continue being used
@@ -67,9 +69,7 @@ public abstract class AbstractSpotifyInteractor {
      */
     abstract void login();
 
-    /**
-     * Beyond this point, there should be only getter and setter methods
-     */
+    // *** Beyond this point, there should only be getter and setter methods ***
 
     public String getCode() {
         return code;
