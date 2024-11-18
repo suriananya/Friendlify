@@ -2,39 +2,26 @@ package View;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * The View for user profile's ratings page.
- */
-public class ProfileRateAndCommentView {
-    // Private final variables
-    private final JFrame frame;
-    private final JLabel headerLabel;
+public class ProfileRateAndCommentView extends JPanel {
     private final JButton backButton;
-    private final JScrollPane scrollPane;
     private final JPanel contentPanel;
+
+    /**
+     * The View for user profile's ratings page.
+     */
 
     // Constructor
     public ProfileRateAndCommentView() {
-        // Initialize the frame
-        frame = new JFrame("Profile - Ratings and Comments");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 400);
-        frame.setLayout(null);
+        setLayout(new BorderLayout(10, 10));
+        setBackground(Color.WHITE);
 
         // Header label
-        headerLabel = new JLabel("Your Friends' Ratings");
+        JLabel headerLabel = new JLabel("Your Friends' Ratings");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
         headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        headerLabel.setBounds(150, 10, 200, 30);
-        frame.add(headerLabel);
-
-        // Back button
-        backButton = new JButton("Back");
-        backButton.setBounds(10, 10, 80, 30);
-        frame.add(backButton);
+        add(headerLabel, BorderLayout.NORTH);
 
         // Content panel (to hold the ratings and comments)
         contentPanel = new JPanel();
@@ -59,23 +46,19 @@ public class ProfileRateAndCommentView {
         }
 
         // Scroll pane
-        scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBounds(10, 50, 460, 300);
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        frame.add(scrollPane);
+        add(scrollPane, BorderLayout.CENTER);
 
-        // Back button functionality
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, "Going back to MainAppView!");
-                frame.dispose(); // Close current view (optional)
-            }
-        });
+        // Back button
+        backButton = new JButton("Back");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(backButton);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Method to display the view
-    public void show() {
-        frame.setVisible(true);
+    // Method to add a listener to the back button
+    public void addBackButtonListener(ActionListener listener) {
+        backButton.addActionListener(listener);
     }
 }
