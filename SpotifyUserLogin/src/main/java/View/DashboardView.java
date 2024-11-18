@@ -2,58 +2,31 @@ package View;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * The view for the dashboard with search bar and profile button.
- */
 public class DashboardView {
-
-    private final JFrame frame;
-    private JLabel heading;
-    private JTextField searchBar;
+    private final JPanel panel;
     private final JButton userButton;
 
-    // Constructor
     public DashboardView() {
-        // Initialize components
-        frame = new JFrame("Search Friends");
-        heading = new JLabel("Search Friends!");
-        searchBar = new JTextField();
-        userButton = new JButton("User 1");
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
 
-        // Set up the frame
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.setLayout(null);
-
-        // Configure heading
+        JLabel heading = new JLabel("Search Friends!", SwingConstants.CENTER);
         heading.setFont(new Font("Arial", Font.BOLD, 20));
-        heading.setHorizontalAlignment(SwingConstants.CENTER);
-        heading.setBounds(100, 20, 200, 30);
-        frame.add(heading);
+        panel.add(heading, BorderLayout.NORTH);
 
-        // Configure search bar
-        searchBar.setBounds(100, 80, 200, 30);
-        frame.add(searchBar);
-
-        // Configure user button
-        userButton.setBounds(300, 20, 80, 30);
-        frame.add(userButton);
-
-        // Add button functionality
-        userButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchText = searchBar.getText();
-                JOptionPane.showMessageDialog(frame, "You clicked on User 1! Search text: " + searchText);
-            }
-        });
+        userButton = new JButton("User 1");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(userButton);
+        panel.add(buttonPanel, BorderLayout.CENTER);
     }
 
-    // Method to display the interface
-    public void show() {
-        frame.setVisible(true);
+    public JPanel getPanel() {
+        return panel;
+    }
+
+    public void addUserButtonListener(ActionListener listener) {
+        userButton.addActionListener(listener);
     }
 }
