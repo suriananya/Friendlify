@@ -17,4 +17,4 @@ Team Members & Github usernames:
 
 5. As a user, I want to rate the songs my friends listen to [ ]
 
-6. As a user, I want to add comments to songs my friends listen to [ ]
+6. As a user, I want to add comments to songs my friends listen to [Karen]
