@@ -1,5 +1,8 @@
 package main;
 
+import View.DashboardView;
+import View.ProfileRateAndCommentView;
+import View.RateFriendView;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.login.LoginState;
@@ -31,6 +34,14 @@ public class Main {
         frame.pack();
         frame.setLocationRelativeTo(null);  // Center the frame
         frame.setVisible(true);
+
+        // Set views visible
+        DashboardView dashboard = new DashboardView();
+        dashboard.show();
+        ProfileRateAndCommentView rateComment = new ProfileRateAndCommentView();
+        rateComment.show();
+        RateFriendView rate = new RateFriendView();
+        rate.show();
     }
 }
 
