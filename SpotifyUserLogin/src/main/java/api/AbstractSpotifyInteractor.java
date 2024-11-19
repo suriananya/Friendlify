@@ -18,7 +18,7 @@ public abstract class AbstractSpotifyInteractor {
 
     // Initialize important variables for app functionality
     public static final String applicationScope =
-            "user-follow-read user-read-private playlist-read-private, playlist-read-collaborative";
+            "user-follow-read user-read-private playlist-read-private playlist-read-collaborative";
     String code;
     String accessToken;
     String refreshToken;
