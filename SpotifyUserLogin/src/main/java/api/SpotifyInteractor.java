@@ -189,7 +189,4 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         // Return null after catch (if there is an error)
         return null;
     }
-
-    // Main function to make testing easier
-    public static void main(String[] args) { }
 }
