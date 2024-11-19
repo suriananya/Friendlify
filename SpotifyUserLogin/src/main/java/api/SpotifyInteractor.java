@@ -123,6 +123,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
 
     @Override
     JSONObject getCurrentUserPlaylists(int limit, int offset) {
+        // Build the request
         final GetListOfCurrentUsersPlaylistsRequest getListOfCurrentUsersPlaylistsRequest = this.api
                 .getListOfCurrentUsersPlaylists()
                 .limit(limit)
@@ -130,50 +131,62 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
                 .build();
 
         try {
+            // Make the request
             return new JSONObject(getListOfCurrentUsersPlaylistsRequest.execute());
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
         }
+        // Return null after catch (if there is an error)
         return null;
     }
 
     @Override
     JSONObject getUserPlaylists(String userId, int limit, int offset) {
+        // Build the request
         final GetListOfUsersPlaylistsRequest getListOfUsersPlaylistsRequest = this.api.getListOfUsersPlaylists(userId)
                 .limit(limit)
                 .offset(offset)
                 .build();
 
         try {
+            // Make the request
             return new JSONObject(getListOfUsersPlaylistsRequest.execute());
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
         }
+        // Return null after catch (if there is an error)
         return null;
     }
 
     @Override
     JSONObject getCurrentUserProfile() {
+        // Build the request
         final GetCurrentUsersProfileRequest getCurrentUsersProfileRequest = this.api.getCurrentUsersProfile()
                 .build();
+
         try {
+            // Make the request
             return new JSONObject(getCurrentUsersProfileRequest.execute());
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
         }
+        // Return null after catch (if there is an error)
         return null;
     }
 
     @Override
     JSONObject getUserProfile(String userId) {
+        // Build the request
         final GetUsersProfileRequest getUsersProfileRequest = this.api.getUsersProfile(userId)
                 .build();
 
         try {
+            // Make the request
             return new JSONObject(getUsersProfileRequest.execute());
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println("Error: " + e.getMessage());
         }
+        // Return null after catch (if there is an error)
         return null;
     }
 
