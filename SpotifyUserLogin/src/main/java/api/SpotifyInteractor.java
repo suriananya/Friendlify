@@ -88,6 +88,11 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
+    public void refreshAccessToken() {
+        authorizationCodeRefresh();
+    }
+
+    @Override
     public JSONObject getArtist(String artistId) {
         // Build the request
         final GetArtistRequest getArtistRequest = this.api.getArtist(artistId)

@@ -70,6 +70,12 @@ public abstract class AbstractSpotifyInteractor {
     abstract void login();
 
     /**
+     * A simpler to read method that refreshes the access token.
+     * Calls authorizationCodeRefresh() to hide logic.
+     */
+    public abstract void refreshAccessToken();
+
+    /**
      * Make a call to the Spotify API to collect artist data. Read more here:
      * <a href="https://developer.spotify.com/documentation/web-api/reference/get-an-artist">Get Artist</a>
      * @param artistId the id of the targeted artist.
