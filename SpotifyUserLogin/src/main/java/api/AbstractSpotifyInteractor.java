@@ -71,14 +71,17 @@ public abstract class AbstractSpotifyInteractor {
     abstract void login();
 
     /**
-     * Make a call to the Spotify API to collect artist data.
+     * Make a call to the Spotify API to collect artist data. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-an-artist">Get Artist</a>
      * @param artistId the id of the targeted artist.
      * @return the response from the Spotify API.
      */
     abstract JSONObject getArtist(String artistId);
 
     /**
-     * Makes a call to the Spotify API to collect a playlist's items
+     * Makes a call to the Spotify API to collect a playlist's items. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-playlists-tracks">
+     *     Get Playlist Items</a>
      * @param playlistId the id of the targeted playlist.
      * @param fields filters for the query. Leave empty for all fields (all information).
      * @param limit the maximum number of items to return.
@@ -88,26 +91,33 @@ public abstract class AbstractSpotifyInteractor {
     abstract JSONObject getPlaylistItems(String playlistId, String fields, int limit, int offset);
 
     /**
-     * Makes a call to the Spotify API to collect the current user's playlist information.
+     * Makes a call to the Spotify API to collect the current user's playlist information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-a-list-of-current-users-playlists">
+     *     Get Current User's Playlists</a>
      * @return the response from the Spotify API.
      */
     abstract JSONObject getCurrentUserPlaylists();
 
     /**
-     * Makes a call to the Spotify API to collect a user's playlist information.
+     * Makes a call to the Spotify API to collect a user's playlist information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-list-users-playlists">
+     *     Get User's Playlists</a>
      * @param userId the id of the targeted user.
      * @return the response from the Spotify API.
      */
     abstract JSONObject getUserPlaylists(String userId);
 
     /**
-     * Makes a call to the Spotify API to collect the current user's profile information.
+     * Makes a call to the Spotify API to collect the current user's profile information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile">
+     *     Get Current User's Profile</a>
      * @return the response from the Spotify API.
      */
     abstract JSONObject getCurrentUserProfile();
 
     /**
-     * Makes a call to the Spotify API to collect a user's profile information.
+     * Makes a call to the Spotify API to collect a user's profile information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-users-profile">Get User's Profile</a>
      * @param userId the id of the targeted user.
      * @return the response from the Spotify API.
      */
