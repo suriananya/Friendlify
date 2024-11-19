@@ -1,7 +1,6 @@
 package api;
 
 import org.apache.hc.core5.http.ParseException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
@@ -89,7 +88,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
-    JSONObject getArtist(String artistId) {
+    public JSONObject getArtist(String artistId) {
         // Build the request
         final GetArtistRequest getArtistRequest = this.api.getArtist(artistId)
                 .build();
@@ -105,7 +104,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
-    JSONObject getPlaylistItems(String playlistId, int limit, int offset) {
+    public JSONObject getPlaylistItems(String playlistId, int limit, int offset) {
         // Build the request
         final GetPlaylistsItemsRequest getPlaylistsItemsRequest = this.api.getPlaylistsItems(playlistId)
                 .limit(limit)
@@ -123,7 +122,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
-    JSONObject getCurrentUserPlaylists(int limit, int offset) {
+    public JSONObject getCurrentUserPlaylists(int limit, int offset) {
         // Build the request
         final GetListOfCurrentUsersPlaylistsRequest getListOfCurrentUsersPlaylistsRequest = this.api
                 .getListOfCurrentUsersPlaylists()
@@ -142,7 +141,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
-    JSONObject getUserPlaylists(String userId, int limit, int offset) {
+    public JSONObject getUserPlaylists(String userId, int limit, int offset) {
         // Build the request
         final GetListOfUsersPlaylistsRequest getListOfUsersPlaylistsRequest = this.api.getListOfUsersPlaylists(userId)
                 .limit(limit)
@@ -160,7 +159,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
-    JSONObject getCurrentUserProfile() {
+    public JSONObject getCurrentUserProfile() {
         // Build the request
         final GetCurrentUsersProfileRequest getCurrentUsersProfileRequest = this.api.getCurrentUsersProfile()
                 .build();
@@ -176,7 +175,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
-    JSONObject getUserProfile(String userId) {
+    public JSONObject getUserProfile(String userId) {
         // Build the request
         final GetUsersProfileRequest getUsersProfileRequest = this.api.getUsersProfile(userId)
                 .build();
@@ -192,34 +191,5 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     // Main function to make testing easier
-    public static void main(String[] args) {
-        SpotifyInteractor interactor = new SpotifyInteractor();
-        interactor.login();
-
-        System.out.println("Get Artist test:");
-        System.out.println(interactor.getArtist("6RQ9kYbHisp1UUbnfwHNeU").getString("name"));
-
-        System.out.println("Get Playlist items test:");
-        JSONArray playlistTracks = interactor.getPlaylistItems("3NTWh52BO994lvgv3EJLyn", 1, 0).getJSONArray("items");
-        JSONObject firstTrack = playlistTracks.getJSONObject(0).getJSONObject("track");
-        System.out.println(firstTrack.getString("name"));
-
-        System.out.println("Get Current User Playlists test:");
-        JSONArray currentUserPlaylists = interactor.getCurrentUserPlaylists(1, 0).getJSONArray("items");
-        JSONObject currentUserPlaylist = currentUserPlaylists.getJSONObject(0);
-        System.out.println(currentUserPlaylist.getString("name"));
-
-        System.out.println("Get User Playlist test:");
-        JSONArray userPlaylists = interactor.getUserPlaylists("jjunevo", 1, 0).getJSONArray("items");
-        JSONObject userPlaylist = userPlaylists.getJSONObject(0);
-        System.out.println(userPlaylist.getString("name"));
-
-        System.out.println("Get Current User Profile test:");
-        JSONObject currentUserProfile = interactor.getCurrentUserProfile();
-        System.out.println(currentUserProfile.getString("displayName"));
-
-        System.out.println("Get User Profile test:");
-        JSONObject userProfile = interactor.getUserProfile("jjunevo");
-        System.out.println(userProfile.getString("displayName"));
-    }
+    public static void main(String[] args) { }
 }

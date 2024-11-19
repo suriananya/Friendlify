@@ -75,7 +75,7 @@ public abstract class AbstractSpotifyInteractor {
      * @param artistId the id of the targeted artist.
      * @return the response from the Spotify API. null if there is an error.
      */
-    abstract JSONObject getArtist(String artistId);
+    public abstract JSONObject getArtist(String artistId);
 
     /**
      * Makes a call to the Spotify API to collect a playlist's items. Read more here:
@@ -86,7 +86,7 @@ public abstract class AbstractSpotifyInteractor {
      * @param offset the index of the first item to return.
      * @return the response from the Spotify API. null if there is an error.
      */
-    abstract JSONObject getPlaylistItems(String playlistId, int limit, int offset);
+    public abstract JSONObject getPlaylistItems(String playlistId, int limit, int offset);
 
     /**
      * Makes a call to the Spotify API to collect the current user's playlist information. Read more here:
@@ -96,7 +96,7 @@ public abstract class AbstractSpotifyInteractor {
      * @param offset the index of the first item to return.
      * @return the response from the Spotify API. null if there is an error.
      */
-    abstract JSONObject getCurrentUserPlaylists(int limit, int offset);
+    public abstract JSONObject getCurrentUserPlaylists(int limit, int offset);
 
     /**
      * Makes a call to the Spotify API to collect a user's playlist information. Read more here:
@@ -107,7 +107,7 @@ public abstract class AbstractSpotifyInteractor {
      * @param offset the index of the first item to return.
      * @return the response from the Spotify API. null if there is an error.
      */
-    abstract JSONObject getUserPlaylists(String userId, int limit, int offset);
+    public abstract JSONObject getUserPlaylists(String userId, int limit, int offset);
 
     /**
      * Makes a call to the Spotify API to collect the current user's profile information. Read more here:
@@ -115,7 +115,7 @@ public abstract class AbstractSpotifyInteractor {
      *     Get Current User's Profile</a>
      * @return the response from the Spotify API. null if there is an error.
      */
-    abstract JSONObject getCurrentUserProfile();
+    public abstract JSONObject getCurrentUserProfile();
 
     /**
      * Makes a call to the Spotify API to collect a user's profile information. Read more here:
@@ -123,7 +123,7 @@ public abstract class AbstractSpotifyInteractor {
      * @param userId the id of the targeted user.
      * @return the response from the Spotify API. null if there is an error.
      */
-    abstract JSONObject getUserProfile(String userId);
+    public abstract JSONObject getUserProfile(String userId);
 
     // *** Beyond this point, there should only be default getter and setter methods ***
 
