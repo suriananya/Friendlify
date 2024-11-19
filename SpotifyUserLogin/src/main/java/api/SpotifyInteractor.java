@@ -13,7 +13,8 @@ import java.net.URI;
 import java.util.Scanner;
 
 /**
- * A class to help interact with the SpotifyAPI.
+ * A class to help interact with the SpotifyAPI. I recommend reading:
+ * <a href="https://github.com/spotify-web-api-java/spotify-web-api-java">spotify-web-api-java</a>
  */
 public class SpotifyInteractor extends AbstractSpotifyInteractor{
     void authorizationCodeRefresh() {
