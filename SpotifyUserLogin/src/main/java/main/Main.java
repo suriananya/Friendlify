@@ -64,7 +64,7 @@ public class Main {
         // Profile navigation
         profileView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
         profileView.addPlaylistButtonListener(e -> {
-            playlistView.displayPlaylist(userProfile.getPlaylists().get(0)); // Display the first playlist
+            playlistView.displayPlaylist(userProfile.getPlaylist().get(0)); // Display the first playlist
             cardLayout.show(frame.getContentPane(), "Playlist");
         });
         profileView.addRatingsButtonListener(e -> cardLayout.show(frame.getContentPane(), "RateComment"));

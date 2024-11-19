@@ -1,5 +1,6 @@
 package api;
 
+import org.json.JSONObject;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 
@@ -17,7 +18,7 @@ public abstract class AbstractSpotifyInteractor {
 
     // Initialize important variables for app functionality
     public static final String applicationScope =
-            "user-follow-read user-library-read user-read-private playlist-read-private";
+            "user-follow-read user-read-private playlist-read-private playlist-read-collaborative";
     String code;
     String accessToken;
     String refreshToken;
@@ -56,20 +57,81 @@ public abstract class AbstractSpotifyInteractor {
     /**
      * Completes the login scheme by combining a series of methods to log in the user.
      * This method will provide instructions to help log in through the command line.
-     * Furthermore, there are instructions located below, in this JavaDoc.
-     * <p>
-     *  Login instructions
-     *  1. When you run this file, it will send you a link to authenticate your account.
-     *  2. Click on this link to authenticate your account.
-     *  3. Afterward, it will send you to a blank page, where you will receive a connection error.
-     *  4. Copy the link of the page you were sent to.
-     *  5. Paste it into the command line, and press enter.
-     *  6. From there, the code will generate for you an access and refresh token.
+     * Furthermore, there are instructions located below, in this JavaDoc.<p>
+     *  Login instructions<p>
+     *  1. When you run this file, it will send you a link to authenticate your account.<p>
+     *  2. Click on this link to authenticate your account.<p>
+     *  3. Afterward, it will send you to a blank page, where you will receive a connection error.<p>
+     *  4. Copy the link of the page you were sent to.<p>
+     *  5. Paste it into the command line, and press enter.<p>
+     *  6. From there, the code will generate for you an access and refresh token.<p>
      *  7. If you receive no errors. This means that you've logged in.
      */
     abstract void login();
 
-    // *** Beyond this point, there should only be getter and setter methods ***
+    /**
+     * A simpler to read method that refreshes the access token.
+     * Calls authorizationCodeRefresh() to hide logic.
+     */
+    public abstract void refreshAccessToken();
+
+    /**
+     * Make a call to the Spotify API to collect artist data. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-an-artist">Get Artist</a>
+     * @param artistId the id of the targeted artist.
+     * @return the response from the Spotify API. null if there is an error.
+     */
+    public abstract JSONObject getArtist(String artistId);
+
+    /**
+     * Makes a call to the Spotify API to collect a playlist's items. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-playlists-tracks">
+     * Get Playlist Items</a>
+     * @param playlistId the id of the targeted playlist.
+     * @param limit the maximum number of items to return.
+     * @param offset the index of the first item to return.
+     * @return the response from the Spotify API. null if there is an error.
+     */
+    public abstract JSONObject getPlaylistItems(String playlistId, int limit, int offset);
+
+    /**
+     * Makes a call to the Spotify API to collect the current user's playlist information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-a-list-of-current-users-playlists">
+     *     Get Current User's Playlists</a>
+     * @param limit the maximum number of items to return.
+     * @param offset the index of the first item to return.
+     * @return the response from the Spotify API. null if there is an error.
+     */
+    public abstract JSONObject getCurrentUserPlaylists(int limit, int offset);
+
+    /**
+     * Makes a call to the Spotify API to collect a user's playlist information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-list-users-playlists">
+     * Get User's Playlists</a>
+     * @param userId the id of the targeted user.
+     * @param limit the maximum number of items to return.
+     * @param offset the index of the first item to return.
+     * @return the response from the Spotify API. null if there is an error.
+     */
+    public abstract JSONObject getUserPlaylists(String userId, int limit, int offset);
+
+    /**
+     * Makes a call to the Spotify API to collect the current user's profile information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile">
+     *     Get Current User's Profile</a>
+     * @return the response from the Spotify API. null if there is an error.
+     */
+    public abstract JSONObject getCurrentUserProfile();
+
+    /**
+     * Makes a call to the Spotify API to collect a user's profile information. Read more here:
+     * <a href="https://developer.spotify.com/documentation/web-api/reference/get-users-profile">Get User's Profile</a>
+     * @param userId the id of the targeted user.
+     * @return the response from the Spotify API. null if there is an error.
+     */
+    public abstract JSONObject getUserProfile(String userId);
+
+    // *** Beyond this point, there should only be default getter and setter methods ***
 
     public String getCode() {
         return code;
