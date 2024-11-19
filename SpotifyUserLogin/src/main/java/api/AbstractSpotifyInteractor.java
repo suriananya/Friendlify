@@ -1,5 +1,6 @@
 package api;
 
+import org.json.JSONObject;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 
@@ -17,7 +18,7 @@ public abstract class AbstractSpotifyInteractor {
 
     // Initialize important variables for app functionality
     public static final String applicationScope =
-            "user-follow-read user-library-read user-read-private playlist-read-private";
+            "user-follow-read user-read-private playlist-read-private, playlist-read-collaborative";
     String code;
     String accessToken;
     String refreshToken;
@@ -69,7 +70,50 @@ public abstract class AbstractSpotifyInteractor {
      */
     abstract void login();
 
-    // *** Beyond this point, there should only be getter and setter methods ***
+    /**
+     * Make a call to the Spotify API to collect artist data.
+     * @param artistId the id of the targeted artist.
+     * @return the response from the Spotify API.
+     */
+    abstract JSONObject getArtist(String artistId);
+
+    /**
+     * Makes a call to the Spotify API to collect a playlist's items
+     * @param playlistId the id of the targeted playlist.
+     * @param fields filters for the query. Leave empty for all fields (all information).
+     * @param limit the maximum number of items to return.
+     * @param offset the index of the first item to return.
+     * @return the response from the Spotify API.
+     */
+    abstract JSONObject getPlaylistItems(String playlistId, String fields, int limit, int offset);
+
+    /**
+     * Makes a call to the Spotify API to collect the current user's playlist information.
+     * @return the response from the Spotify API.
+     */
+    abstract JSONObject getCurrentUserPlaylists();
+
+    /**
+     * Makes a call to the Spotify API to collect a user's playlist information.
+     * @param userId the id of the targeted user.
+     * @return the response from the Spotify API.
+     */
+    abstract JSONObject getUserPlaylists(String userId);
+
+    /**
+     * Makes a call to the Spotify API to collect the current user's profile information.
+     * @return the response from the Spotify API.
+     */
+    abstract JSONObject getCurrentUserProfile();
+
+    /**
+     * Makes a call to the Spotify API to collect a user's profile information.
+     * @param userId the id of the targeted user.
+     * @return the response from the Spotify API.
+     */
+    abstract JSONObject getUserProfile(String userId);
+
+    // *** Beyond this point, there should only be default getter and setter methods ***
 
     public String getCode() {
         return code;
