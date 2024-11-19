@@ -57,15 +57,14 @@ public abstract class AbstractSpotifyInteractor {
     /**
      * Completes the login scheme by combining a series of methods to log in the user.
      * This method will provide instructions to help log in through the command line.
-     * Furthermore, there are instructions located below, in this JavaDoc.
-     * <p>
-     *  Login instructions
-     *  1. When you run this file, it will send you a link to authenticate your account.
-     *  2. Click on this link to authenticate your account.
-     *  3. Afterward, it will send you to a blank page, where you will receive a connection error.
-     *  4. Copy the link of the page you were sent to.
-     *  5. Paste it into the command line, and press enter.
-     *  6. From there, the code will generate for you an access and refresh token.
+     * Furthermore, there are instructions located below, in this JavaDoc.<p>
+     *  Login instructions<p>
+     *  1. When you run this file, it will send you a link to authenticate your account.<p>
+     *  2. Click on this link to authenticate your account.<p>
+     *  3. Afterward, it will send you to a blank page, where you will receive a connection error.<p>
+     *  4. Copy the link of the page you were sent to.<p>
+     *  5. Paste it into the command line, and press enter.<p>
+     *  6. From there, the code will generate for you an access and refresh token.<p>
      *  7. If you receive no errors. This means that you've logged in.
      */
     abstract void login();
