@@ -1,16 +1,30 @@
 package entities;
+import api.SpotifyInteractor;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class UserProfile {
     private final String username;
-    private final List<Playlist> playlists;
+
+    private final List<Playlist> playlist;
+
     private final List<String> preferredGenres;
     private final List<String> preferredArtists;
 
+    private final SpotifyInteractor interactor = new SpotifyInteractor();
+
     public UserProfile(String username, List<Playlist> playlists, List<String> preferredGenres,
                        List<String> preferredArtists) {
-        this.username = username;
-        this.playlists = playlists;
+        // Initialize user information
+        JSONObject userInfo = interactor.getCurrentUserProfile();
+        this.username = userInfo.getString("displayName");
+
+        // Initialize playlist information
+        JSONObject playlistInfo = interactor.getCurrentUserPlaylists(1, 0);
+        String playlistId = playlistInfo.getJSONArray("items").getJSONObject(0).getString("id");
+        this.playlist = playlists;
+
         this.preferredGenres = preferredGenres;
         this.preferredArtists = preferredArtists;
     }
@@ -18,8 +32,8 @@ public class UserProfile {
         return username;
     }
 
-    public List<Playlist> getPlaylists() {
-        return playlists;
+    public List<Playlist> getPlaylist() {
+        return playlist;
     }
 
     public List<String> getPreferredGenres() {
