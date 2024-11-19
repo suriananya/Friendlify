@@ -80,14 +80,13 @@ public abstract class AbstractSpotifyInteractor {
     /**
      * Makes a call to the Spotify API to collect a playlist's items. Read more here:
      * <a href="https://developer.spotify.com/documentation/web-api/reference/get-playlists-tracks">
-     *     Get Playlist Items</a>
+     * Get Playlist Items</a>
      * @param playlistId the id of the targeted playlist.
-     * @param fields filters for the query. Leave empty for all fields (all information).
      * @param limit the maximum number of items to return.
      * @param offset the index of the first item to return.
      * @return the response from the Spotify API. null if there is an error.
      */
-    abstract JSONObject getPlaylistItems(String playlistId, String fields, int limit, int offset);
+    abstract JSONObject getPlaylistItems(String playlistId, int limit, int offset);
 
     /**
      * Makes a call to the Spotify API to collect the current user's playlist information. Read more here:

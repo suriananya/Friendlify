@@ -4,11 +4,11 @@ import org.apache.hc.core5.http.ParseException;
 import org.json.JSONObject;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
-import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistRequest;
+import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
 
 import java.io.IOException;
 import java.net.URI;
@@ -100,7 +100,20 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     @Override
-    JSONObject getPlaylistItems(String playlistId, String fields, int limit, int offset) {
+    JSONObject getPlaylistItems(String playlistId, int limit, int offset) {
+        // Build the request
+        final GetPlaylistsItemsRequest getPlaylistsItemsRequest = this.api.getPlaylistsItems(playlistId)
+                .limit(limit)
+                .offset(offset)
+                .build();
+
+        try {
+            // Make the request
+            return new JSONObject(getPlaylistsItemsRequest.execute());
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        // Return null after catch (if there is an error)
         return null;
     }
 
