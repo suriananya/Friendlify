@@ -4,9 +4,11 @@ import org.apache.hc.core5.http.ParseException;
 import org.json.JSONObject;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
+import se.michaelthelin.spotify.requests.data.artists.GetArtistRequest;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,9 +20,12 @@ import java.util.Scanner;
  */
 public class SpotifyInteractor extends AbstractSpotifyInteractor{
     void authorizationCodeRefresh() {
+        // Build the request
+        final AuthorizationCodeRefreshRequest authorizationCodeRefreshRequest = this.api.authorizationCodeRefresh()
+                .build();
+
         try {
-            final AuthorizationCodeRefreshRequest authorizationCodeRefreshRequest =
-                    this.api.authorizationCodeRefresh().build();
+            // Make the request
             final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRefreshRequest.execute();
 
             // Set access and refresh token for further "spotifyApi" object usage
@@ -32,9 +37,12 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     void authorizationCode() {
+        // Build the request
+        final AuthorizationCodeRequest authorizationCodeRequest = this.api.authorizationCode(this.getCode())
+                .build();
+
         try {
-            final AuthorizationCodeRequest authorizationCodeRequest =
-                    this.api.authorizationCode(this.getCode()).build();
+            // Make the request
             final AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
 
             // Set access and refresh token for further "spotifyApi" object usage
@@ -47,9 +55,11 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     }
 
     void authorizationCodeUri() {
+        // Build the request
         final AuthorizationCodeUriRequest authorizationCodeUriRequest = this.api.authorizationCodeUri()
                 .scope(applicationScope)
                 .build();
+        // Make the request
         final URI uri = authorizationCodeUriRequest.execute();
 
         System.out.println("Application Authorization: " + uri.toString());
@@ -75,6 +85,17 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
 
     @Override
     JSONObject getArtist(String artistId) {
+        // Build the request
+        final GetArtistRequest getArtistRequest = this.api.getArtist(artistId)
+                .build();
+
+        try {
+            // Make the request
+            return new JSONObject(getArtistRequest.execute());
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        // Return null after catch (if there is an error)
         return null;
     }
 
@@ -107,5 +128,6 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     public static void main(String[] args) {
         SpotifyInteractor interactor = new SpotifyInteractor();
         interactor.login();
+        interactor.getArtist("6RQ9kYbHisp1UUbnfwHNeU");
     }
 }
