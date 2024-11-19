@@ -1,6 +1,7 @@
 package api;
 
 import org.apache.hc.core5.http.ParseException;
+import org.json.JSONObject;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
@@ -69,6 +70,36 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         System.out.println("Assuming you have received no errors, you have 'logged in'");
 
         scanner.close();
+    }
+
+    @Override
+    JSONObject getArtist(String artistId) {
+        return null;
+    }
+
+    @Override
+    JSONObject getPlaylistItems(String playlistId, String fields, int limit, int offset) {
+        return null;
+    }
+
+    @Override
+    JSONObject getCurrentUserPlaylists() {
+        return null;
+    }
+
+    @Override
+    JSONObject getUserPlaylists(String userId) {
+        return null;
+    }
+
+    @Override
+    JSONObject getCurrentUserProfile() {
+        return null;
+    }
+
+    @Override
+    JSONObject getUserProfile(String userId) {
+        return null;
     }
 
     // Main function to make testing easier
