@@ -31,7 +31,23 @@ public class EditPreferencesController {
                     null
             ));
         }
+
     }
+
+    public void updatePreferencesManually(List<String> newGenres, List<String> newArtists) {
+        try {
+            EditPreferencesResponse response = useCase.execute(newGenres, newArtists);
+            presenter.present(response);
+        } catch (Exception e) {
+            presenter.present(new EditPreferencesResponse(
+                    false,
+                    "Failed to update preferences manually: " + e.getMessage(),
+                    null,
+                    null
+            ));
+        }
+    }
+
 
     /**
      * Retrieves the current state of the preferences from the presenter.

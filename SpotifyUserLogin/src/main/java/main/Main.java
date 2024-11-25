@@ -6,11 +6,12 @@ import interface_adapter.editpreferences.EditPreferencesController;
 import interface_adapter.editpreferences.EditPreferencesPresenter;
 import interface_adapter.editpreferences.EditPreferencesState;
 import Use_case.Editing.EditPreferencesUseCase;
-import Use_case.Editing.EditPreferencesResponse;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -21,7 +22,7 @@ public class Main {
             System.exit(1);
         }
 
-        // Fetch user profile (initial data)
+        // Fetch user profile with initial preferred genres and artists
         UserProfile userProfile = fetchUserProfile(interactor);
 
         // Initialize UseCase, Presenter, and Controller
@@ -50,12 +51,30 @@ public class Main {
         profileView.setLayout(new BoxLayout(profileView, BoxLayout.Y_AXIS));
 
         JLabel usernameLabel = new JLabel();
-        JLabel genresLabel = new JLabel();
-        JLabel artistsLabel = new JLabel();
+        JLabel genresLabel = new JLabel("Preferred Genres: ");
+        JLabel artistsLabel = new JLabel("Preferred Artists: ");
 
         profileView.add(usernameLabel);
         profileView.add(genresLabel);
         profileView.add(artistsLabel);
+
+        // Edit and Save Buttons
+        JTextField genreField = new JTextField(20);
+        JTextField artistField = new JTextField(20);
+        JButton editButton = new JButton("Edit Preferences");
+        JButton saveButton = new JButton("Save Preferences");
+
+        genreField.setVisible(false);
+        artistField.setVisible(false);
+        saveButton.setVisible(false);
+
+        profileView.add(new JLabel("Update Preferred Genres (comma-separated):"));
+        profileView.add(genreField);
+        profileView.add(new JLabel("Update Preferred Artists (comma-separated):"));
+        profileView.add(artistField);
+
+        profileView.add(editButton);
+        profileView.add(saveButton);
 
         JButton backButton = new JButton("Back to Main Menu");
         profileView.add(backButton);
@@ -67,17 +86,55 @@ public class Main {
 
         // MainMenu -> Profile Navigation
         profileButton.addActionListener(e -> {
-            // Fetch and display preferences
-            controller.updatePreferencesDynamically();
-            EditPreferencesState state = controller.getState();
+            // Display initial preferences
+            usernameLabel.setText("Username: " + userProfile.getUsername());
+            genresLabel.setText("Preferred Genres: " + String.join(", ", userProfile.getPreferredGenres()));
+            artistsLabel.setText("Preferred Artists: " + String.join(", ", userProfile.getPreferredArtists()));
+            cardLayout.show(frame.getContentPane(), "Profile");
+        });
 
-            if (state != null && state.isSuccess()) {
-                usernameLabel.setText("Username: " + userProfile.getUsername());
+        // Edit Button Action
+        editButton.addActionListener(e -> {
+            genreField.setText(String.join(", ", userProfile.getPreferredGenres()));
+            artistField.setText(String.join(", ", userProfile.getPreferredArtists()));
+
+            genreField.setVisible(true);
+            artistField.setVisible(true);
+            saveButton.setVisible(true);
+            editButton.setVisible(false);
+
+            profileView.revalidate();
+            profileView.repaint();
+        });
+
+        // Save Button Action
+        saveButton.addActionListener(e -> {
+            String[] newGenres = genreField.getText().split(",");
+            String[] newArtists = artistField.getText().split(",");
+
+            controller.updatePreferencesManually(
+                    new ArrayList<>(Arrays.asList(newGenres)),
+                    new ArrayList<>(Arrays.asList(newArtists))
+            );
+
+            EditPreferencesState state = controller.getState();
+            if (state.isSuccess()) {
+                JOptionPane.showMessageDialog(frame, "Preferences updated successfully!");
+
+                // Update display with new preferences
                 genresLabel.setText("Preferred Genres: " + String.join(", ", state.getGenres()));
                 artistsLabel.setText("Preferred Artists: " + String.join(", ", state.getArtists()));
-                cardLayout.show(frame.getContentPane(), "Profile");
+
+                // Hide input fields and show edit button
+                genreField.setVisible(false);
+                artistField.setVisible(false);
+                saveButton.setVisible(false);
+                editButton.setVisible(true);
+
+                profileView.revalidate();
+                profileView.repaint();
             } else {
-                JOptionPane.showMessageDialog(frame, "Error updating preferences: " + (state != null ? state.getMessage() : "Unknown error"), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Error updating preferences: " + state.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -122,10 +179,6 @@ public class Main {
     private static UserProfile fetchUserProfile(SpotifyInteractor interactor) {
         try {
             // Fetch initial user profile details
-            var userProfileJson = interactor.getCurrentUserProfile();
-            String username = userProfileJson.optString("display_name", "Unknown User");
-
-            // Return a new user profile
             return new UserProfile(interactor);
         } catch (Exception e) {
             System.err.println("Failed to fetch user profile: " + e.getMessage());

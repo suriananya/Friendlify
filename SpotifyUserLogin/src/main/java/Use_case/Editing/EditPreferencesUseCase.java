@@ -21,6 +21,7 @@ public class EditPreferencesUseCase {
         this.userProfile = userProfile;
     }
 
+    // Dynamic update method
     public EditPreferencesResponse execute() {
         try {
             Map<String, Integer> genreCounts = new HashMap<>();
@@ -83,6 +84,27 @@ public class EditPreferencesUseCase {
             return new EditPreferencesResponse(true, "Preferences updated dynamically.", List.of(topGenre), List.of(topArtist));
         } catch (Exception e) {
             return new EditPreferencesResponse(false, "Error updating preferences dynamically: " + e.getMessage(), null, null);
+        }
+    }
+
+    // Manual update method
+    public EditPreferencesResponse execute(List<String> newGenres, List<String> newArtists) {
+        try {
+            if ((newGenres == null || newGenres.isEmpty()) && (newArtists == null || newArtists.isEmpty())) {
+                return new EditPreferencesResponse(false, "Genres and artists cannot both be empty.", null, null);
+            }
+
+            // Update user profile with provided genres and artists
+            if (newGenres != null && !newGenres.isEmpty()) {
+                userProfile.updatePreferredGenres(newGenres);
+            }
+            if (newArtists != null && !newArtists.isEmpty()) {
+                userProfile.updatePreferredArtists(newArtists);
+            }
+
+            return new EditPreferencesResponse(true, "Preferences updated manually.", newGenres, newArtists);
+        } catch (Exception e) {
+            return new EditPreferencesResponse(false, "Error updating preferences manually: " + e.getMessage(), null, null);
         }
     }
 }
