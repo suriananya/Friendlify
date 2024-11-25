@@ -40,7 +40,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         }
     }
 
-    void authorizationCode() {
+    public void authorizationCode() {
         // Build the request
         final AuthorizationCodeRequest authorizationCodeRequest = this.api.authorizationCode(this.getCode())
                 .build();
@@ -58,10 +58,11 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         }
     }
 
-    void authorizationCodeUri() {
+    public void authorizationCodeUri() {
         // Build the request
         final AuthorizationCodeUriRequest authorizationCodeUriRequest = this.api.authorizationCodeUri()
                 .scope(applicationScope)
+                .show_dialog((true))
                 .build();
         // Make the request
         final URI uri = authorizationCodeUriRequest.execute();
@@ -95,18 +96,26 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
     @Override
     public JSONObject getArtist(String artistId) {
         // Build the request
-        final GetArtistRequest getArtistRequest = this.api.getArtist(artistId)
-                .build();
+        final GetArtistRequest getArtistRequest = this.api.getArtist(artistId).build();
 
         try {
-            // Make the request
+            // Execute the request and return the result as a JSONObject
             return new JSONObject(getArtistRequest.execute());
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("IO Error while fetching artist with ID: " + artistId + " - " + e.getMessage());
+        } catch (SpotifyWebApiException e) {
+            System.err.println("Spotify API Error while fetching artist with ID: " + artistId + " - " + e.getMessage());
+            if (e.getMessage().contains("rate limit")) {
+                System.err.println("Rate limit exceeded. Consider retrying after some time.");
+            }
+        } catch (ParseException e) {
+            System.err.println("Parsing error while processing artist with ID: " + artistId + " - " + e.getMessage());
         }
-        // Return null after catch (if there is an error)
-        return null;
+
+        // Return an empty JSON object instead of null
+        return new JSONObject();
     }
+
 
     @Override
     public JSONObject getPlaylistItems(String playlistId, int limit, int offset) {

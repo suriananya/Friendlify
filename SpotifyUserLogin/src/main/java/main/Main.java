@@ -1,82 +1,135 @@
 package main;
 
+import api.SpotifyInteractor;
 import entities.UserProfile;
-import entities.Playlist;
-import entities.Song;
-import View.DashboardView;
-import View.ProfileRateAndCommentView;
-import View.ProfileView;
-import View.MainMenuView;
-import View.PlaylistView;
+import interface_adapter.editpreferences.EditPreferencesController;
+import interface_adapter.editpreferences.EditPreferencesPresenter;
+import interface_adapter.editpreferences.EditPreferencesState;
+import Use_case.Editing.EditPreferencesUseCase;
+import Use_case.Editing.EditPreferencesResponse;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+        // Initialize SpotifyInteractor and authenticate
+        SpotifyInteractor interactor = new SpotifyInteractor();
+        if (!authenticate(interactor)) {
+            System.err.println("Authentication failed. Exiting application.");
+            System.exit(1);
+        }
+
+        // Fetch user profile (initial data)
+        UserProfile userProfile = fetchUserProfile(interactor);
+
+        // Initialize UseCase, Presenter, and Controller
+        EditPreferencesUseCase useCase = new EditPreferencesUseCase(interactor, userProfile);
+        EditPreferencesPresenter presenter = new EditPreferencesPresenter();
+        EditPreferencesController controller = new EditPreferencesController(useCase, presenter);
+
         // Create the main frame and set up CardLayout
         JFrame frame = new JFrame("Spotify Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);
         frame.setLayout(new CardLayout());
 
-        // Mock UserProfile data
-        List<Song> songs = Arrays.asList(
-                new Song("Blinding Lights", "The Weeknd"),
-                new Song("Shake It Off", "Taylor Swift"),
-                new Song("Hotline Bling", "Drake")
-        );
-        Playlist playlist = new Playlist("Top Hits", songs);
-        UserProfile userProfile = new UserProfile(
-                "MusicLover123",
-                List.of(playlist),
-                Arrays.asList("Pop", "R&B", "Hip-Hop"),
-                Arrays.asList("Taylor Swift", "The Weeknd", "Drake")
-        );
+        // Create MainMenu and Profile views
+        JPanel mainMenuView = new JPanel();
+        mainMenuView.setLayout(new BoxLayout(mainMenuView, BoxLayout.Y_AXIS));
+        JLabel menuLabel = new JLabel("Main Menu");
+        menuLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainMenuView.add(menuLabel);
 
-        // Create instances of views
-        MainMenuView mainMenuView = new MainMenuView();
-        DashboardView dashboardView = new DashboardView();
-        ProfileView profileView = new ProfileView();
-        PlaylistView playlistView = new PlaylistView();
-        ProfileRateAndCommentView rateCommentView = new ProfileRateAndCommentView();
+        JButton profileButton = new JButton("View Profile");
+        profileButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainMenuView.add(profileButton);
 
-        // Add views to the CardLayout with unique identifiers
+        JPanel profileView = new JPanel();
+        profileView.setLayout(new BoxLayout(profileView, BoxLayout.Y_AXIS));
+
+        JLabel usernameLabel = new JLabel();
+        JLabel genresLabel = new JLabel();
+        JLabel artistsLabel = new JLabel();
+
+        profileView.add(usernameLabel);
+        profileView.add(genresLabel);
+        profileView.add(artistsLabel);
+
+        JButton backButton = new JButton("Back to Main Menu");
+        profileView.add(backButton);
+
         frame.getContentPane().add(mainMenuView, "MainMenu");
-        frame.getContentPane().add(dashboardView.getPanel(), "Dashboard");
         frame.getContentPane().add(profileView, "Profile");
-        frame.getContentPane().add(playlistView, "Playlist");
-        frame.getContentPane().add(rateCommentView, "RateComment");
 
-        // Access CardLayout for navigation
         CardLayout cardLayout = (CardLayout) frame.getContentPane().getLayout();
 
-        // MainMenu navigation
-        mainMenuView.addProfileButtonListener(e -> {
-            profileView.displayUserProfile(userProfile);
-            cardLayout.show(frame.getContentPane(), "Profile");
+        // MainMenu -> Profile Navigation
+        profileButton.addActionListener(e -> {
+            // Fetch and display preferences
+            controller.updatePreferencesDynamically();
+            EditPreferencesState state = controller.getState();
+
+            if (state != null && state.isSuccess()) {
+                usernameLabel.setText("Username: " + userProfile.getUsername());
+                genresLabel.setText("Preferred Genres: " + String.join(", ", state.getGenres()));
+                artistsLabel.setText("Preferred Artists: " + String.join(", ", state.getArtists()));
+                cardLayout.show(frame.getContentPane(), "Profile");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Error updating preferences: " + (state != null ? state.getMessage() : "Unknown error"), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
-        mainMenuView.addSearchFriendsButtonListener(e -> cardLayout.show(frame.getContentPane(), "Dashboard"));
+        // Profile -> MainMenu Navigation
+        backButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
 
-        // Profile navigation
-        profileView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
-        profileView.addPlaylistButtonListener(e -> {
-            playlistView.displayPlaylist(userProfile.getPlaylist().get(0)); // Display the first playlist
-            cardLayout.show(frame.getContentPane(), "Playlist");
-        });
-        profileView.addRatingsButtonListener(e -> cardLayout.show(frame.getContentPane(), "RateComment"));
-
-        // Playlist back navigation
-        playlistView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "Profile"));
-
-        // RateComment back navigation
-        rateCommentView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "Profile"));
-
-        // Show the MainMenu view initially
+        // Display the main frame
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private static boolean authenticate(SpotifyInteractor interactor) {
+        System.out.println("Please authenticate your account by visiting:");
+        interactor.authorizationCodeUri();
+
+        System.out.println("After logging in, copy the redirected URL and paste it below.");
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        System.out.print("Enter the full redirected URL: ");
+        String fullUrl = scanner.nextLine();
+
+        try {
+            // Extract authorization code
+            String authorizationCode = fullUrl.split("code=")[1].split("&")[0];
+            interactor.setCode(authorizationCode);
+            interactor.authorizationCode();
+
+            // Validate access token
+            String accessToken = interactor.getAccessToken();
+            if (accessToken == null || accessToken.isEmpty()) {
+                System.err.println("Failed to retrieve a valid access token.");
+                return false;
+            }
+
+            System.out.println("Authentication successful.");
+            return true;
+        } catch (Exception e) {
+            System.err.println("Authentication failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static UserProfile fetchUserProfile(SpotifyInteractor interactor) {
+        try {
+            // Fetch initial user profile details
+            var userProfileJson = interactor.getCurrentUserProfile();
+            String username = userProfileJson.optString("display_name", "Unknown User");
+
+            // Return a new user profile
+            return new UserProfile(interactor);
+        } catch (Exception e) {
+            System.err.println("Failed to fetch user profile: " + e.getMessage());
+            return new UserProfile(interactor);
+        }
     }
 }
