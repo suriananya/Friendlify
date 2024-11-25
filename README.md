@@ -11,7 +11,7 @@ Team Members & Github usernames:
 
 2. As a user, I want to edit my liked genres and artists for my friends to see [June]
 
-3. As a user I want to search for my friends by their usernames to see their profiles. [Jack]
+3. As a user I want to see a list of my friends, and their profiles. [Jack]
 
 4. As a user, I want to have a “roulette” or “surprise me” option that randomizes a song from my friends for me to sample their music [ ]
 
