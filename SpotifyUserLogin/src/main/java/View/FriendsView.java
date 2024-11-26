@@ -11,6 +11,9 @@ public class FriendsView extends JPanel {
     private final JButton backButton = new JButton("Back");
     private final JPanel friendsPanel;
 
+    /**
+     * Initialize the view the friends list
+     */
     public FriendsView() {
         this.defineLayout();
 
@@ -40,6 +43,10 @@ public class FriendsView extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Display friends list
+     * @param friendsList a list of the current user's friends
+     */
     public void displayFriends(JSONArray friendsList) {
         friendsPanel.removeAll();
 
