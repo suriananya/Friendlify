@@ -61,18 +61,28 @@ public class FriendsView extends JPanel {
         for (int i = 0; i < friendsList.length(); i++) {
             JSONObject friend = friendsList.getJSONObject(i);
 
-            JPanel friendItem = new JPanel();
-            friendItem.setLayout(new BorderLayout());
-            friendItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-            friendItem.setBackground(Color.WHITE);
+            JPanel friendItem = individualFriendDisplayHelper();
 
-            JLabel friendLabel = new JLabel(friend.getString("display_name"));
-            friendLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+            JLabel friendLabel = individualFriendLabelHelper(friend);
             friendItem.add(friendLabel, BorderLayout.CENTER);
 
             friendsPanel.add(friendItem);
             friendsPanel.add(Box.createVerticalStrut(10)); // Spacing between items
         }
+    }
+
+    private JPanel individualFriendDisplayHelper() {
+        JPanel friendItem = new JPanel();
+        friendItem.setLayout(new BorderLayout());
+        friendItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+        friendItem.setBackground(Color.WHITE);
+        return friendItem;
+    }
+
+    private JLabel individualFriendLabelHelper(JSONObject friend) {
+        JLabel friendLabel = new JLabel(friend.getString("display_name"));
+        friendLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        return friendLabel;
     }
 
     public void addBackButtonListener(ActionListener listener) {
