@@ -3,6 +3,7 @@ package api;
 import org.json.JSONObject;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
+import se.michaelthelin.spotify.requests.AbstractRequest;
 
 import java.net.URI;
 
@@ -79,7 +80,7 @@ public abstract class AbstractSpotifyInteractor {
      * Make a call to the Spotify API to collect artist data. Read more here:
      * <a href="https://developer.spotify.com/documentation/web-api/reference/get-an-artist">Get Artist</a>
      * @param artistId the id of the targeted artist.
-     * @return the response from the Spotify API. An empty JSON if there is an error.
+     * @return the response from the Spotify API. Empty JSON if there is an error.
      */
     public abstract JSONObject getArtist(String artistId);
 
@@ -90,7 +91,7 @@ public abstract class AbstractSpotifyInteractor {
      * @param playlistId the id of the targeted playlist.
      * @param limit the maximum number of items to return.
      * @param offset the index of the first item to return.
-     * @return the response from the Spotify API. null if there is an error.
+     * @return the response from the Spotify API. Empty JSON if there is an error.
      */
     public abstract JSONObject getPlaylistItems(String playlistId, int limit, int offset);
 
@@ -100,7 +101,7 @@ public abstract class AbstractSpotifyInteractor {
      *     Get Current User's Playlists</a>
      * @param limit the maximum number of items to return.
      * @param offset the index of the first item to return.
-     * @return the response from the Spotify API. null if there is an error.
+     * @return the response from the Spotify API. Empty JSON if there is an error.
      */
     public abstract JSONObject getCurrentUserPlaylists(int limit, int offset);
 
@@ -111,7 +112,7 @@ public abstract class AbstractSpotifyInteractor {
      * @param userId the id of the targeted user.
      * @param limit the maximum number of items to return.
      * @param offset the index of the first item to return.
-     * @return the response from the Spotify API. null if there is an error.
+     * @return the response from the Spotify API. Empty JSON if there is an error.
      */
     public abstract JSONObject getUserPlaylists(String userId, int limit, int offset);
 
@@ -119,7 +120,7 @@ public abstract class AbstractSpotifyInteractor {
      * Makes a call to the Spotify API to collect the current user's profile information. Read more here:
      * <a href="https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile">
      *     Get Current User's Profile</a>
-     * @return the response from the Spotify API. null if there is an error.
+     * @return the response from the Spotify API. Empty JSON if there is an error.
      */
     public abstract JSONObject getCurrentUserProfile();
 
@@ -127,7 +128,7 @@ public abstract class AbstractSpotifyInteractor {
      * Makes a call to the Spotify API to collect a user's profile information. Read more here:
      * <a href="https://developer.spotify.com/documentation/web-api/reference/get-users-profile">Get User's Profile</a>
      * @param userId the id of the targeted user.
-     * @return the response from the Spotify API. null if there is an error.
+     * @return the response from the Spotify API. Empty JSON if there is an error.
      */
     public abstract JSONObject getUserProfile(String userId);
 

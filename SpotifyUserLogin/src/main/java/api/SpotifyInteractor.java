@@ -132,7 +132,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
             System.out.println("Error: " + e.getMessage());
         }
         // Return null after catch (if there is an error)
-        return null;
+        return new JSONObject();
     }
 
     @Override
@@ -151,7 +151,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
             System.out.println("Error: " + e.getMessage());
         }
         // Return null after catch (if there is an error)
-        return null;
+        return new JSONObject();
     }
 
     @Override
@@ -169,7 +169,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
             System.out.println("Error: " + e.getMessage());
         }
         // Return null after catch (if there is an error)
-        return null;
+        return new JSONObject();
     }
 
     @Override
@@ -185,7 +185,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
             System.out.println("Error: " + e.getMessage());
         }
         // Return null after catch (if there is an error)
-        return null;
+        return new JSONObject();
     }
 
     @Override
@@ -201,6 +201,6 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
             System.out.println("Error: " + e.getMessage());
         }
         // Return null after catch (if there is an error)
-        return null;
+        return new JSONObject();
     }
 }
