@@ -4,16 +4,13 @@ import api.SpotifyInteractor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.io.*;
-import java.nio.file.*;
 
 public class UserProfile {
     private final String username;
     private final String userID;  // Add a userID field
+    private final JSONArray friendsList = new JSONArray();
     private List<String> preferredGenres;
     private List<String> preferredArtists;
 
@@ -39,6 +36,11 @@ public class UserProfile {
                 for (int i = 0; i < playlists.length(); i++) {
                     JSONObject playlist = playlists.getJSONObject(i);
                     String playlistId = playlist.getString("id");
+
+                    JSONObject playlistOwner = playlist.getJSONObject("owner");
+                    if (!Objects.equals(playlistOwner.getString("id"), fetchedUserID)) {
+                        addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("display_name"));
+                    }
 
                     JSONObject playlistItemsJson = interactor.getPlaylistItems(playlistId, 10, 0);
                     if (playlistItemsJson != null && playlistItemsJson.has("items")) {
@@ -100,6 +102,11 @@ public class UserProfile {
         this.preferredArtists = artists;
     }
 
+    private void addToFriendsList(String id, String displayName) {
+        JSONObject friendsJson = new JSONObject().put("id", id).put("display_name", displayName);
+        this.friendsList.put(friendsJson);
+    }
+
     public String getUsername() {
         return username;
     }
@@ -114,6 +121,10 @@ public class UserProfile {
 
     public List<String> getPreferredArtists() {
         return preferredArtists;
+    }
+
+    public JSONArray getFriendsList() {
+        return friendsList;
     }
 
     /**
