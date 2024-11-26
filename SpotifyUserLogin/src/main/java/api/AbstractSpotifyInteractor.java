@@ -79,7 +79,7 @@ public abstract class AbstractSpotifyInteractor {
      * Make a call to the Spotify API to collect artist data. Read more here:
      * <a href="https://developer.spotify.com/documentation/web-api/reference/get-an-artist">Get Artist</a>
      * @param artistId the id of the targeted artist.
-     * @return the response from the Spotify API. null if there is an error.
+     * @return the response from the Spotify API. An empty JSON if there is an error.
      */
     public abstract JSONObject getArtist(String artistId);
 
