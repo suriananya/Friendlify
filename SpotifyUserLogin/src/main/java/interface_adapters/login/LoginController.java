@@ -1,4 +1,4 @@
-package Interface_Adapters.login;
+package interface_adapters.login;
 
 import Use_case.LoginResult;
 import Use_case.LoginUseCase;
