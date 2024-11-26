@@ -8,14 +8,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.*;
+import java.nio.file.*;
 
 public class UserProfile {
     private final String username;
+    private final String userID;  // Add a userID field
     private List<String> preferredGenres;
     private List<String> preferredArtists;
 
     public UserProfile(SpotifyInteractor interactor) {
         String fetchedUsername = "Unknown User";
+        String fetchedUserID = "Unknown ID";  // Initialize userID
         List<String> genres = new ArrayList<>();
         List<String> artists = new ArrayList<>();
         Map<String, Integer> genreCounts = new HashMap<>();
@@ -26,6 +30,7 @@ public class UserProfile {
             JSONObject userProfileJson = interactor.getCurrentUserProfile();
             System.out.println("User Profile Response: " + userProfileJson); // Debugging line
             fetchedUsername = userProfileJson.optString("display_name", userProfileJson.optString("id", "Unknown User"));
+            fetchedUserID = userProfileJson.optString("id", "Unknown ID"); // Fetch user ID from profile
 
             // Fetch playlists and determine genres/artists (as before)
             JSONObject playlistsJson = interactor.getCurrentUserPlaylists(5, 0);
@@ -83,13 +88,24 @@ public class UserProfile {
         }
 
         this.username = fetchedUsername;
+        this.userID = fetchedUserID; // Set user ID
         this.preferredGenres = genres;
         this.preferredArtists = artists;
     }
 
+    public UserProfile(String userId, List<String> genres, List<String> artists) {
+        this.username = userId;
+        this.userID = userId;  // Set user ID
+        this.preferredGenres = genres;
+        this.preferredArtists = artists;
+    }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getUserId() {
+        return userID;  // Return user ID
     }
 
     public List<String> getPreferredGenres() {
@@ -100,6 +116,34 @@ public class UserProfile {
         return preferredArtists;
     }
 
+    /**
+     * Sets the preferred genres of the user.
+     * @param newGenres The list of genres to set.
+     */
+    public void setPreferredGenres(List<String> newGenres) {
+        if (newGenres != null && !newGenres.isEmpty()) {
+            this.preferredGenres = new ArrayList<>(newGenres);
+        } else {
+            System.err.println("Cannot set preferred genres with null or empty list.");
+        }
+    }
+
+    /**
+     * Sets the preferred artists of the user.
+     * @param newArtists The list of artists to set.
+     */
+    public void setPreferredArtists(List<String> newArtists) {
+        if (newArtists != null && !newArtists.isEmpty()) {
+            this.preferredArtists = new ArrayList<>(newArtists);
+        } else {
+            System.err.println("Cannot set preferred artists with null or empty list.");
+        }
+    }
+
+    /**
+     * Updates the list of preferred genres by adding new genres.
+     * @param newGenres The list of genres to add.
+     */
     public void updatePreferredGenres(List<String> newGenres) {
         if (newGenres != null && !newGenres.isEmpty()) {
             this.preferredGenres = new ArrayList<>(newGenres);
@@ -108,6 +152,10 @@ public class UserProfile {
         }
     }
 
+    /**
+     * Updates the list of preferred artists by adding new artists.
+     * @param newArtists The list of artists to add.
+     */
     public void updatePreferredArtists(List<String> newArtists) {
         if (newArtists != null && !newArtists.isEmpty()) {
             this.preferredArtists = new ArrayList<>(newArtists);
@@ -115,4 +163,65 @@ public class UserProfile {
             System.err.println("Cannot update preferred artists with null or empty list.");
         }
     }
+
+public class UserIDManager {
+    private static final String USER_DATA_FILE = System.getProperty("user.home") + File.separator + "user_data.txt";
+
+    /**
+     * Retrieves the user's ID. If no ID exists, a new one is generated, stored, and returned.
+     *
+     * @return The user's unique ID.
+     */
+    public static String getUserID() {
+        try {
+            // Check if the user data file exists
+            File file = new File(USER_DATA_FILE);
+            if (file.exists()) {
+                // Read the file and return the stored user ID
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                String userId = reader.readLine();
+                reader.close();
+                if (userId != null && !userId.isEmpty()) {
+                    return userId.trim();
+                }
+            }
+
+            // If the file doesn't exist or is empty, generate a new user ID
+            String newUserId = generateUserID();
+            saveUserID(newUserId);
+            return newUserId;
+
+        } catch (IOException e) {
+            System.err.println("Error reading or creating user data file: " + e.getMessage());
+            throw new RuntimeException("Unable to retrieve user ID.", e);
+        }
+    }
+
+    /**
+     * Saves the user's ID to the file for future retrieval.
+     *
+     * @param userId The user ID to save.
+     */
+    private static void saveUserID(String userId) {
+        try {
+            // Write the user ID to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(USER_DATA_FILE));
+            writer.write(userId);
+            writer.close();
+        } catch (IOException e) {
+            System.err.println("Error saving user ID: " + e.getMessage());
+            throw new RuntimeException("Unable to save user ID.", e);
+        }
+    }
+
+    /**
+     * Generates a new unique user ID.
+     * This is a placeholder implementation and can be replaced with a more sophisticated generator if needed.
+     *
+     * @return A new unique user ID.
+     */
+    private static String generateUserID() {
+        return "user-" + System.currentTimeMillis();
+    }
+}
 }
