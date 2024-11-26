@@ -10,7 +10,7 @@ import java.io.*;
 public class UserProfile {
     private final String username;
     private final String userID;  // Add a userID field
-    private final List<String[]> friendsList = new ArrayList<>();
+    private final JSONArray friendsList = new JSONArray();
     private List<String> preferredGenres;
     private List<String> preferredArtists;
 
@@ -103,8 +103,8 @@ public class UserProfile {
     }
 
     private void addToFriendsList(String id, String displayName) {
-        String[] friend = {id, displayName};
-        this.friendsList.add(friend);
+        JSONObject friendsJson = new JSONObject().put("id", id).put("display_name", displayName);
+        this.friendsList.put(friendsJson);
     }
 
     public String getUsername() {
@@ -121,6 +121,10 @@ public class UserProfile {
 
     public List<String> getPreferredArtists() {
         return preferredArtists;
+    }
+
+    public JSONArray getFriendsList() {
+        return friendsList;
     }
 
     /**

@@ -1,11 +1,11 @@
 package View;
 
-import entities.Song;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class FriendsView extends JPanel {
     private final JButton backButton = new JButton("Back");
@@ -40,7 +40,7 @@ public class FriendsView extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    public void displayFriends(ArrayList<String> friendsList) {
+    public void displayFriends(JSONArray friendsList) {
         friendsPanel.removeAll();
 
         if (!friendsList.isEmpty()) {
@@ -57,14 +57,16 @@ public class FriendsView extends JPanel {
         friendsPanel.add(emptyListLabel);
     }
 
-    private void handleFriendDisplay(ArrayList<String> friendsList) {
-        for (String id : friendsList) {
+    private void handleFriendDisplay(JSONArray friendsList) {
+        for (int i = 0; i < friendsList.length(); i++) {
+            JSONObject friend = friendsList.getJSONObject(i);
+
             JPanel friendItem = new JPanel();
             friendItem.setLayout(new BorderLayout());
             friendItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
             friendItem.setBackground(Color.WHITE);
 
-            JLabel friendLabel = new JLabel(song.getTitle());
+            JLabel friendLabel = new JLabel(friend.getString("display_name"));
             friendLabel.setFont(new Font("Arial", Font.PLAIN, 16));
             friendItem.add(friendLabel, BorderLayout.CENTER);
 
