@@ -102,13 +102,32 @@ public class Main {
         artistField.setVisible(false);
         saveButton.setVisible(false);
 
-        profileView.add(new JLabel("Update Preferred Genres (comma-separated):"));
-        profileView.add(genreField);
-        profileView.add(new JLabel("Update Preferred Artists (comma-separated):"));
-        profileView.add(artistField);
+        JLabel updateGenre = new JLabel("Update Preferred Genres (comma-separated):");
+        JLabel updateArtist = new JLabel("Update Preferred Artists (comma-separated):");
 
+        updateGenre.setVisible(false);
+        updateArtist.setVisible(false);
+
+        profileView.add(updateGenre);
+        profileView.add(genreField);
+        profileView.add(updateArtist);
+        profileView.add(artistField);
         profileView.add(editButton);
         profileView.add(saveButton);
+
+        editButton.addActionListener(e -> {
+            if (!editButton.isVisible()) {
+                updateGenre.setVisible(true);
+                updateArtist.setVisible(true);
+            }
+        });
+
+        saveButton.addActionListener(e -> {
+            if (!saveButton.isVisible()) {
+                updateGenre.setVisible(false);
+                updateArtist.setVisible(false);
+            }
+        });
 
         JButton backButton = new JButton("Back to Main Menu");
         profileView.add(backButton);
