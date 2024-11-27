@@ -1,6 +1,7 @@
 package entities;
 
 import api.SpotifyInteractor;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,6 +17,9 @@ public class UserProfile {
     private final JSONArray friendsList = new JSONArray();
     private JSONArray playlists = new JSONArray();
 
+    private final Map<String, Integer> genreCounts = new HashMap<>();
+    private final Map<String, Integer> artistCounts = new HashMap<>();
+
     private List<String> preferredGenres;
     private List<String> preferredArtists;
 
@@ -28,65 +32,16 @@ public class UserProfile {
         List<String> genres = new ArrayList<>();
         List<String> artists = new ArrayList<>();
 
-        Map<String, Integer> genreCounts = new HashMap<>();
-        Map<String, Integer> artistCounts = new HashMap<>();
-
         try {
             JSONObject userProfileJson = this.fetchUserProfile();
             fetchedUsername = this.fetchUsername(userProfileJson);
             fetchedUserID = this.fetchId(userProfileJson);
 
-            // Fetch playlists and determine genres/artists (as before)
-            JSONObject playlistsJson = interactor.getCurrentUserPlaylists(5, 0);
-            if (playlistsJson != null && playlistsJson.has("items")) {
-                JSONArray playlists = playlistsJson.getJSONArray("items");
-                this.playlists = playlistsJson.getJSONArray("items");
-                for (int i = 0; i < playlists.length(); i++) {
-                    JSONObject playlist = playlists.getJSONObject(i);
-                    String playlistId = playlist.getString("id");
-
-                    JSONObject playlistOwner = playlist.getJSONObject("owner");
-                    if (!Objects.equals(playlistOwner.getString("id"), getUserId())) {
-                        addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("display_name"));
-                    }
-
-                    JSONObject playlistItemsJson = interactor.getPlaylistItems(playlistId, 10, 0);
-                    if (playlistItemsJson != null && playlistItemsJson.has("items")) {
-                        JSONArray items = playlistItemsJson.getJSONArray("items");
-                        for (int j = 0; j < items.length(); j++) {
-                            JSONObject track = items.getJSONObject(j).getJSONObject("track");
-                            JSONArray trackArtists = track.getJSONArray("artists");
-
-                            for (int k = 0; k < trackArtists.length(); k++) {
-                                String artistId = trackArtists.getJSONObject(k).getString("id");
-                                String artistName = trackArtists.getJSONObject(k).getString("name");
-                                artistCounts.put(artistName, artistCounts.getOrDefault(artistName, 0) + 1);
-
-                                // Fetch artist genres
-                                JSONObject artistData = interactor.getArtist(artistId);
-                                if (artistData != null && artistData.has("genres")) {
-                                    JSONArray artistGenres = artistData.getJSONArray("genres");
-                                    for (int g = 0; g < artistGenres.length(); g++) {
-                                        String genre = artistGenres.getString(g);
-                                        genreCounts.put(genre, genreCounts.getOrDefault(genre, 0) + 1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            initializeUserTaste();
 
             // Determine top genre and artist
-            String topGenre = genreCounts.entrySet().stream()
-                    .max(Map.Entry.comparingByValue())
-                    .map(Map.Entry::getKey)
-                    .orElse("Unknown");
-
-            String topArtist = artistCounts.entrySet().stream()
-                    .max(Map.Entry.comparingByValue())
-                    .map(Map.Entry::getKey)
-                    .orElse("Unknown");
+            String topGenre = topMetric(genreCounts);
+            String topArtist = topMetric(artistCounts);
 
             genres.add(topGenre);
             artists.add(topArtist);
@@ -111,72 +66,77 @@ public class UserProfile {
         this.preferredArtists = artists;
     }
 
-    private void initializeUserTaste(Map<String, Integer> genreCounts, Map<String, Integer> artistCounts) {
-        // Fetch playlists and determine genres/artists (as before)
-        JSONObject playlistsJson = this.interactor.getCurrentUserPlaylists(5, 0);
-
-        if (playlistsJson == null || !playlistsJson.has("items")) {
-            return;
-        }
-
-        this.playlists = playlistsJson.getJSONArray("items");
-
-        inspectPlaylists(genreCounts, artistCounts);
+    @NotNull
+    private String topMetric(Map<String, Integer> metricMap) {
+        return metricMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("Unknown");
     }
 
-    private void inspectPlaylists(Map<String, Integer> genreCounts, Map<String, Integer> artistCounts) {
+    private void initializeUserTaste() {
+        JSONObject playlistsJson = this.interactor.getCurrentUserPlaylists(5, 0);
+        if (isInvalidJSON(playlistsJson, "items")) return;
+
+        this.playlists = playlistsJson.getJSONArray("items");
+        inspectPlaylists();
+    }
+
+    private void inspectPlaylists() {
         for (int i = 0; i < playlists.length(); i++) {
             JSONObject playlist = playlists.getJSONObject(i);
             String playlistId = playlist.getString("id");
 
+            // Adds friends to friend list. Refactor this later
             JSONObject playlistOwner = playlist.getJSONObject("owner");
             if (!Objects.equals(playlistOwner.getString("id"), getUserId())) {
                 addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("display_name"));
             }
 
             JSONObject playlistItemsJson = interactor.getPlaylistItems(playlistId, 10, 0);
-            determinePreference(playlistItemsJson, genreCounts, artistCounts);
+            inspectTracks(playlistItemsJson);
         }
     }
 
-    private void determinePreference(JSONObject playlistItemsJson, Map<String, Integer> genreCounts, Map<String, Integer> artistCounts) {
-        if (playlistItemsJson == null || playlistItemsJson.has("items")) {
-            return;
-        }
+    private void inspectTracks(JSONObject playlistItemsJson) {
+        if (isInvalidJSON(playlistItemsJson, "items")) return;
 
         JSONArray items = playlistItemsJson.getJSONArray("items");
-        determinePreferenceHelper(items, genreCounts, artistCounts);
+        determinePreference(items);
     }
 
-    private void determinePreferenceHelper(JSONArray items, Map<String, Integer> genreCounts, Map<String, Integer> artistCounts) {
+    private void determinePreference(JSONArray items) {
         for (int j = 0; j < items.length(); j++) {
             JSONObject track = items.getJSONObject(j).getJSONObject("track");
             JSONArray trackArtists = track.getJSONArray("artists");
 
-            analyzeArtists(trackArtists, genreCounts, artistCounts);
+            analyzeArtists(trackArtists);
         }
     }
 
-    private void analyzeArtists(JSONArray trackArtists, Map<String, Integer> genreCounts, Map<String, Integer> artistCounts) {
+    private void analyzeArtists(JSONArray trackArtists) {
         for (int k = 0; k < trackArtists.length(); k++) {
             String artistId = trackArtists.getJSONObject(k).getString("id");
             String artistName = trackArtists.getJSONObject(k).getString("name");
             artistCounts.put(artistName, artistCounts.getOrDefault(artistName, 0) + 1);
 
-            extractArtistGenres(artistId, genreCounts);
+            extractArtistGenres(artistId);
         }
     }
 
-    private void extractArtistGenres(String artistId, Map<String, Integer> genreCounts) {
-        // Fetch artist genres
+    private void extractArtistGenres(String artistId) {
         JSONObject artistData = interactor.getArtist(artistId);
-        if (artistData != null && artistData.has("genres")) {
-            JSONArray artistGenres = artistData.getJSONArray("genres");
-            for (int g = 0; g < artistGenres.length(); g++) {
-                String genre = artistGenres.getString(g);
-                genreCounts.put(genre, genreCounts.getOrDefault(genre, 0) + 1);
-            }
+        if (isInvalidJSON(artistData, "genres")) return;
+
+        JSONArray artistGenres = artistData.getJSONArray("genres");
+        for (int g = 0; g < artistGenres.length(); g++) {
+            String genre = artistGenres.getString(g);
+            genreCounts.put(genre, genreCounts.getOrDefault(genre, 0) + 1);
         }
+    }
+
+    private static boolean isInvalidJSON(JSONObject jsonObject, String mandatedKey) {
+        return jsonObject == null || jsonObject.has(mandatedKey);
     }
 
     private JSONObject fetchUserProfile() {
