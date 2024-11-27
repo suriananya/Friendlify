@@ -18,8 +18,7 @@ public class TestSpotifyInteractor {
                 .getJSONArray("items");
 
         JSONObject firstTrack = playlistTracks.getJSONObject(0).getJSONObject("track");
-
-        System.out.println(firstTrack.getString("name"));
+        assertEquals("Time", firstTrack.getString("name"));
     }
 
     public static void getCurrentUserPlaylist() {
@@ -29,6 +28,7 @@ public class TestSpotifyInteractor {
 
         JSONObject currentUserPlaylist = currentUserPlaylists.getJSONObject(0);
 
+        System.out.print("Check if this is the name of your one of your playlists: ");
         System.out.println(currentUserPlaylist.getString("name"));
     }
 
@@ -38,14 +38,13 @@ public class TestSpotifyInteractor {
                 .getJSONArray("items");
 
         JSONObject userPlaylist = userPlaylists.getJSONObject(0);
-
-        System.out.println(userPlaylist.getString("name"));
+        assertEquals("sep13th", userPlaylist.getString("name"));
     }
 
     public static void getCurrentUserProfile() {
         JSONObject currentUserProfile = interactor
                 .getCurrentUserProfile();
-
+        System.out.print("Check if this is your Spotify username: ");
         System.out.println(currentUserProfile.getString("displayName"));
     }
 
@@ -53,7 +52,7 @@ public class TestSpotifyInteractor {
         JSONObject userProfile = interactor
                 .getUserProfile("jjunevo");
 
-        System.out.println(userProfile.getString("displayName"));
+        assertEquals("juney", userProfile.getString("displayName"));
     }
 
     public static void main(String[] args) {
