@@ -102,7 +102,7 @@ public class Main {
         artistField.setVisible(false);
         saveButton.setVisible(false);
 
-                JLabel updateGenre = new JLabel("Update Preferred Genres (comma-separated):");
+        JLabel updateGenre = new JLabel("Update Preferred Genres (comma-separated):");
         JLabel updateArtist = new JLabel("Update Preferred Artists (comma-separated):");
 
         updateGenre.setVisible(false);
