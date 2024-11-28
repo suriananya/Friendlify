@@ -128,6 +128,21 @@ public class UserProfile {
     }
 
     /**
+     * An overloaded version for getFriendsList.
+     * Instead, in this case, you get to choose what information to get, instead of all of it.
+     * @param type the type of information. Accepted values are "id" and "display_name".
+     * @return a list of friend ids or display names.
+     */
+    public List<String> getFriendsList(String type) {
+        List<String> temp = new ArrayList<>();
+        for (int i = 0; i < this.friendsList.length(); i++) {
+            String friendStat = this.friendsList.getJSONObject(i).getString(type);
+            temp.add(friendStat);
+        }
+        return temp;
+    }
+
+    /**
      * Sets the preferred genres of the user.
      * @param newGenres The list of genres to set.
      */
