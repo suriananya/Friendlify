@@ -128,6 +128,24 @@ public class UserProfile {
     }
 
     /**
+     * More readable alternative to overloading getFriendsList.
+     * Handles id collection logic for you.
+     * @return a list of friend ids.
+     */
+    public List<String> getFriendsListIds() {
+        return getFriendsList("id");
+    }
+
+    /**
+     * More readable alternative to overloading getFriendsList.
+     * Handles display_name collection logic for you.
+     * @return a list of friend display names.
+     */
+    public List<String> getFriendsListNames() {
+        return getFriendsList("display_name");
+    }
+
+    /**
      * An overloaded version for getFriendsList.
      * Instead, in this case, you get to choose what information to get, instead of all of it.
      * @param type the type of information. Accepted values are "id" and "display_name".
