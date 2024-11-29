@@ -1,16 +1,9 @@
 package Use_Case.Edit_Preferences;
 
-import Use_case.Editing.EditPreferencesResponse;
-import Use_case.Editing.EditPreferencesUseCase;
-import entities.UserProfile;
-import org.junit.Test;
+import useCase.Editing.EditPreferencesResponse;
+import useCase.Editing.EditPreferencesUseCase;
+import entities.users.UserProfile;
 import api.SpotifyInteractor;
-import interface_adapter.editpreferences.EditPreferencesController;
-import interface_adapter.editpreferences.EditPreferencesPresenter;
-import interface_adapter.editpreferences.EditPreferencesState;
-import interface_adapter.editpreferences.SpotifyDataGateway;
-import interface_adapter.editpreferences.SpotifyGatewayImplementation;
-import org.json.JSONObject;
 
 import java.util.List;
 

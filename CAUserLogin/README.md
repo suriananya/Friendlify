@@ -58,7 +58,7 @@ shared between use cases.
 Several packages _don't_ have subpackages: `data_access`, `entity`, `view`, and
 `app`.
 
-* The same View object may have several Use Case buttons inside a single `JPanel`,
+* The same view object may have several Use Case buttons inside a single `JPanel`,
   so separating by use case isn't possible.
 * Entities represent the data from the problem domain that all Use Cases manipulate.
 * The Data Access layer is responsible for saving and reading the Entities.
@@ -100,22 +100,22 @@ in `LoginController` to the diagram. You'll notice that both controllers
 have an Input Boundary that is _injected_ in the constructor, both create
 Input Data from the parameters in method `execute`, and both
 of them call the Use Case execute method, passing in the Input Data. All
-the arguments for the `execute` method come from the View.
+the arguments for the `execute` method come from the view.
 
 #### Presenters
 
 Open `LoginPresenter` and `SignupPresenter` side by side. Both have
-View Model variables and a View Manager Model that are injected into the
+view Model variables and a view Manager Model that are injected into the
 constructor.
 
 Both also have a `prepareSuccessView` method that the Use Case calls
-when it is complete. The job of this method is to update the View Models.
+when it is complete. The job of this method is to update the view Models.
 Read the code for this method in either presenter.
 
-Notice that both of the `prepareSuccessView` methods mutate the state of a View Model
-and call `firePropertyChanged` to alert the relevant View Model that
-the state has changed, and ends with code that tells the View Manager Model
-what the active View should be.
+Notice that both of the `prepareSuccessView` methods mutate the state of a view Model
+and call `firePropertyChanged` to alert the relevant view Model that
+the state has changed, and ends with code that tells the view Manager Model
+what the active view should be.
 
 Both Presenters also have a `prepareFailView` method to handle errors.
 
@@ -129,8 +129,8 @@ but `SignupInteractor` does?
 
 A Controller calls the `execute` method in an Interactor to start processing
 the Use Case data. When it's done, the Interactor tells its Presenter what the result
-is, and the Presenter puts it into the View Model and tells the View Model to change
-which View is showing.
+is, and the Presenter puts it into the view Model and tells the view Model to change
+which view is showing.
 
 Compare `LoginInteractor` and `SignupInteractor`. Notice that both
 use an Input Boundary, Input Data, Output Boundary, and

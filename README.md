@@ -27,7 +27,7 @@
 ## Features
 - **Login and Profile Display**: Log into your Spotify account and view your profile, including playlists, liked genres, and favorite artists.
 - **Edit Preferences**: Update your liked genres and artists for friends to see.
-- **Friend Profiles**: View a list of friends and explore their music profiles.
+- **Friend Profiles**: view a list of friends and explore their music profiles.
 - **“Surprise Me” Feature**: Randomly play a song from your friends' playlists.
 - **Rate Songs**: Give ratings to songs your friends are listening to.
 - **Comment on Songs**: Add comments to your friends' songs for interaction.
