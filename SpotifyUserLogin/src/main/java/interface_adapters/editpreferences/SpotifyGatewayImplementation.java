@@ -1,6 +1,5 @@
-package interface_adapter.editpreferences;
+package interface_adapters.editpreferences;
 import api.SpotifyInteractor;
-import interface_adapter.editpreferences.SpotifyDataGateway;
 import org.json.JSONObject;
 
 public class SpotifyGatewayImplementation extends SpotifyDataGateway {

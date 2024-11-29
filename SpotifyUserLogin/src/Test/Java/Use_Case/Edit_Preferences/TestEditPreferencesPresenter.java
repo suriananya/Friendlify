@@ -1,8 +1,8 @@
 package Use_Case.Edit_Preferences;
 
 import Use_case.Editing.EditPreferencesResponse;
-import interface_adapter.editpreferences.EditPreferencesPresenter;
-import interface_adapter.editpreferences.EditPreferencesState;
+import interface_adapters.editpreferences.EditPreferencesPresenter;
+import interface_adapters.editpreferences.EditPreferencesState;
 
 import java.util.List;
 

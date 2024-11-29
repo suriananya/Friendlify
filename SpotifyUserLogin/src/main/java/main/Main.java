@@ -1,25 +1,18 @@
 package main;
 
 import api.SpotifyInteractor;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import entities.Song;
 import entities.UserProfile;
-import interface_adapter.editpreferences.EditPreferencesController;
-import interface_adapter.editpreferences.EditPreferencesPresenter;
-import interface_adapter.editpreferences.EditPreferencesState;
+import interface_adapters.editpreferences.EditPreferencesController;
+import interface_adapters.editpreferences.EditPreferencesPresenter;
+import interface_adapters.editpreferences.EditPreferencesState;
 import interface_adapters.rating.RateSongController;
 import interface_adapters.rating.RateSongPresenter;
 import Use_case.Editing.EditPreferencesUseCase;
-import Use_case.RateSongUseCase;
-import utilities.UserProfileStorage;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.UUID;

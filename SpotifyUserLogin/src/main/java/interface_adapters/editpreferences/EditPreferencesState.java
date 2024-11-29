@@ -1,4 +1,4 @@
-package interface_adapter.editpreferences;
+package interface_adapters.editpreferences;
 
 import java.util.List;
 

@@ -1,14 +1,11 @@
 package View.EditPreferences;
 
-import interface_adapter.editpreferences.EditPreferencesController;
-import interface_adapter.editpreferences.EditPreferencesState;
+import interface_adapters.editpreferences.EditPreferencesController;
+import interface_adapters.editpreferences.EditPreferencesState;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class EditPreferencesView extends JPanel {
