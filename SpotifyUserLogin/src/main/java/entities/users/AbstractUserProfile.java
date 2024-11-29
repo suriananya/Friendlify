@@ -89,6 +89,9 @@ public abstract class AbstractUserProfile {
 
         genres.add(topGenre);
         artists.add(topArtist);
+
+        this.preferredGenres = genres;
+        this.preferredArtists = artists;
     }
 
     private void initUserInfo() {
@@ -109,4 +112,20 @@ public abstract class AbstractUserProfile {
     abstract JSONObject getUserPlaylistsJSON(int limit, int offset);
 
     abstract JSONObject getUserProfileJSON();
+
+    public List<String> getPreferredArtists() {
+        return preferredArtists;
+    }
+
+    public List<String> getPreferredGenres() {
+        return preferredGenres;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }
