@@ -17,11 +17,11 @@ public class FriendProfile extends AbstractUserProfile{
 
     @Override
     JSONObject getUserPlaylistsJSON(int limit, int offset) {
-        return null;
+        return interactor.getUserPlaylists(userID, limit, offset);
     }
 
     @Override
     JSONObject getUserProfileJSON() {
-        return null;
+        return interactor.getUserProfile(userID);
     }
 }

@@ -11,7 +11,7 @@ import java.util.*;
  * Will be used for the current user, and for friend profiles.
  */
 public abstract class AbstractUserProfile {
-    private final SpotifyInteractor interactor;
+    final SpotifyInteractor interactor;
 
     String username;
     String userID;  // Add a userID field
