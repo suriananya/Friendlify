@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.util.*;
 
-public class AbstractUserProfile {
+public abstract class AbstractUserProfile {
     private final SpotifyInteractor interactor;
 
     private String username;
@@ -42,7 +42,7 @@ public class AbstractUserProfile {
         Map<String, Integer> artistCounts = new HashMap<>();
 
         // Fetch playlists and determine genres/artists (as before)
-        JSONObject playlistsJson = interactor.getCurrentUserPlaylists(5, 0);
+        JSONObject playlistsJson = this.getUserPlaylistsJSON(5, 0);
         if (playlistsJson != null && playlistsJson.has("items")) {
             JSONArray playlists = playlistsJson.getJSONArray("items");
             for (int i = 0; i < playlists.length(); i++) {
@@ -96,7 +96,7 @@ public class AbstractUserProfile {
         String fetchedUserID = "Unknown ID";  // Initialize userID
 
         // Fetch user profile
-        JSONObject userProfileJson = interactor.getCurrentUserProfile();
+        JSONObject userProfileJson = this.getUserProfileJSON();
         System.out.printf("User Profile Response: %s%n", userProfileJson); // Debugging line
         fetchedUsername = userProfileJson.optString("display_name",
                 userProfileJson.optString("id", "Unknown User"));
@@ -105,4 +105,8 @@ public class AbstractUserProfile {
         this.username = fetchedUsername;
         this.userID = fetchedUserID; // Set user ID
     }
+
+    abstract JSONObject getUserPlaylistsJSON(int limit, int offset);
+
+    abstract JSONObject getUserProfileJSON();
 }
