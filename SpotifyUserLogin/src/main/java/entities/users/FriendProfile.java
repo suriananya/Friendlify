@@ -16,6 +16,19 @@ public class FriendProfile extends AbstractUserProfile{
     }
 
     @Override
+    void initUserInfo() {
+        String fetchedUsername = "Unknown User";
+
+        // Fetch user profile
+        JSONObject userProfileJson = this.getUserProfileJSON();
+        System.out.printf("User Profile Response: %s%n", userProfileJson); // Debugging line
+        fetchedUsername = userProfileJson.optString("display_name",
+                userProfileJson.optString("id", "Unknown User"));
+
+        this.username = fetchedUsername;
+    }
+
+    @Override
     JSONObject getUserPlaylistsJSON(int limit, int offset) {
         return interactor.getUserPlaylists(userID, limit, offset);
     }

@@ -52,7 +52,7 @@ public abstract class AbstractUserProfile {
     /**
      * Initializes the user's preferred artists and genres.
      */
-    private void initMusicPreference() {
+    void initMusicPreference() {
         List<String> genres = new ArrayList<>();
         List<String> artists = new ArrayList<>();
         Map<String, Integer> genreCounts = new HashMap<>();
@@ -114,7 +114,7 @@ public abstract class AbstractUserProfile {
     /**
      * Initializes the user's username and ID.
      */
-    private void initUserInfo() {
+    void initUserInfo() {
         String fetchedUsername = "Unknown User";
         String fetchedUserID = "Unknown ID";  // Initialize userID
 
