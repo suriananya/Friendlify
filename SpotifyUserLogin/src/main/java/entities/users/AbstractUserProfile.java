@@ -115,8 +115,8 @@ public abstract class AbstractUserProfile {
      * Initializes the user's username and ID.
      */
     void initUserInfo() {
-        String fetchedUsername = "Unknown User";
-        String fetchedUserID = "Unknown ID";  // Initialize userID
+        String fetchedUsername;
+        String fetchedUserID;  // Initialize userID
 
         // Fetch user profile
         JSONObject userProfileJson = this.getUserProfileJSON();

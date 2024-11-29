@@ -17,7 +17,7 @@ public class FriendProfile extends AbstractUserProfile{
 
     @Override
     void initUserInfo() {
-        String fetchedUsername = "Unknown User";
+        String fetchedUsername;
 
         // Fetch user profile
         JSONObject userProfileJson = this.getUserProfileJSON();
