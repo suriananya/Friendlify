@@ -2,13 +2,13 @@ package main;
 
 import api.SpotifyInteractor;
 import entities.Song;
-import entities.UserProfile;
-import interface_adapters.editpreferences.EditPreferencesController;
-import interface_adapters.editpreferences.EditPreferencesPresenter;
-import interface_adapters.editpreferences.EditPreferencesState;
-import interface_adapters.rating.RateSongController;
-import interface_adapters.rating.RateSongPresenter;
-import Use_case.Editing.EditPreferencesUseCase;
+import entities.users.UserProfile;
+import interfaceAdapters.editpreferences.EditPreferencesController;
+import interfaceAdapters.editpreferences.EditPreferencesPresenter;
+import interfaceAdapters.editpreferences.EditPreferencesState;
+import interfaceAdapters.rating.RateSongController;
+import interfaceAdapters.rating.RateSongPresenter;
+import useCase.Editing.EditPreferencesUseCase;
 
 import javax.swing.*;
 import java.awt.*;

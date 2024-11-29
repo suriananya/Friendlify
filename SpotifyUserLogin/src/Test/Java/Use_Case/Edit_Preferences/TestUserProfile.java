@@ -1,7 +1,7 @@
 package Use_Case.Edit_Preferences;
 
 import api.SpotifyInteractor;
-import entities.UserProfile;
+import entities.users.UserProfile;
 
 import java.util.List;
 

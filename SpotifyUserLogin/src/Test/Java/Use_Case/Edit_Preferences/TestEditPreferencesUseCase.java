@@ -1,8 +1,8 @@
 package Use_Case.Edit_Preferences;
 
-import Use_case.Editing.EditPreferencesResponse;
-import Use_case.Editing.EditPreferencesUseCase;
-import entities.UserProfile;
+import useCase.Editing.EditPreferencesResponse;
+import useCase.Editing.EditPreferencesUseCase;
+import entities.users.UserProfile;
 import api.SpotifyInteractor;
 
 import java.util.List;
