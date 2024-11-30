@@ -33,6 +33,7 @@ public class UserProfile {
             JSONObject playlistsJson = interactor.getCurrentUserPlaylists(5, 0);
             if (playlistsJson != null && playlistsJson.has("items")) {
                 JSONArray playlists = playlistsJson.getJSONArray("items");
+                playlists = Utility.sanitizeJSONArray(playlists);
                 for (int i = 0; i < playlists.length(); i++) {
                     JSONObject playlist = playlists.getJSONObject(i);
                     String playlistId = playlist.getString("id");
