@@ -1,6 +1,7 @@
 package api;
 
 import org.apache.hc.core5.http.ParseException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
@@ -202,5 +203,30 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         }
         // Return null after catch (if there is an error)
         return new JSONObject();
+    }
+
+    public JSONObject getNonOwnedPlaylists(int limit, int offset) {
+        JSONObject currentUserProfile = this.getCurrentUserProfile();
+        String currentUserId = currentUserProfile.optString("id");
+
+        JSONObject allPlaylists = this.getCurrentUserPlaylists(limit, offset);
+        JSONArray items = allPlaylists.optJSONArray("items");
+
+        JSONArray nonOwnedPlaylists = new JSONArray();
+
+        if (items != null) {
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject playlist = items.getJSONObject(i);
+                String ownerId = playlist.getJSONObject("owner").getString("id");
+
+                if (!ownerId.equals(currentUserId)) {
+                    nonOwnedPlaylists.put(playlist);
+                }
+            }
+        }
+
+        JSONObject response = new JSONObject();
+        response.put("items", nonOwnedPlaylists);
+        return response;
     }
 }
