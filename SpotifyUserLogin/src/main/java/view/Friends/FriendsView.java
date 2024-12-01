@@ -1,11 +1,14 @@
 package view.Friends;
 
+import entities.users.UserProfile;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FriendsView extends JPanel {
     private final JButton backButton = new JButton("Back");
@@ -45,10 +48,12 @@ public class FriendsView extends JPanel {
 
     /**
      * Display friends list
-     * @param friendsList a list of the current user's friends
+     * @param currentUser the current user
      */
-    public void displayFriends(JSONArray friendsList) {
+    public void displayFriends(UserProfile currentUser) {
         friendsPanel.removeAll();
+
+        List<String> friendsList = currentUser.getFriendsListNames();
 
         if (!friendsList.isEmpty()) {
             handleFriendDisplay(friendsList);
@@ -64,10 +69,8 @@ public class FriendsView extends JPanel {
         friendsPanel.add(emptyListLabel);
     }
 
-    private void handleFriendDisplay(JSONArray friendsList) {
-        for (int i = 0; i < friendsList.length(); i++) {
-            JSONObject friend = friendsList.getJSONObject(i);
-
+    private void handleFriendDisplay(List<String> friendsList) {
+        for (String friend : friendsList) {
             JPanel friendItem = individualFriendDisplayHelper();
 
             JLabel friendLabel = individualFriendLabelHelper(friend);
@@ -86,8 +89,8 @@ public class FriendsView extends JPanel {
         return friendItem;
     }
 
-    private JLabel individualFriendLabelHelper(JSONObject friend) {
-        JLabel friendLabel = new JLabel(friend.getString("display_name"));
+    private JLabel individualFriendLabelHelper(String friendName) {
+        JLabel friendLabel = new JLabel(friendName);
         friendLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         return friendLabel;
     }
