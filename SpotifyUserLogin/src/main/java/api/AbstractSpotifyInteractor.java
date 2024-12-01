@@ -1,11 +1,16 @@
 package api;
 
+import java.io.IOException;
 import java.net.URI;
 
+import org.apache.hc.core5.http.ParseException;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.requests.data.AbstractDataRequest;
 
 /**
  * A class to dictate and document the methods required for the SpotifyInteractor.
@@ -140,6 +145,23 @@ public abstract class AbstractSpotifyInteractor {
      * @return the response from the Spotify API. Empty JSON if there is an error.
      */
     public abstract JSONObject getUserProfile(String userId);
+
+    /**
+     * Executes an arbitrary data request.
+     * @param req the arbitrary data request to be executed.
+     * @return the request response.
+     */
+    @NotNull
+    static JSONObject executeRequest(AbstractDataRequest req) {
+        JSONObject response = new JSONObject();
+        try {
+            response = new JSONObject(req.execute());
+        }
+        catch (IOException | SpotifyWebApiException | ParseException exc) {
+            defaultExceptionMessage(exc);
+        }
+        return response;
+    }
 
     /**
      * Prints an often used default exception message.

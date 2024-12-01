@@ -13,7 +13,6 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
-import se.michaelthelin.spotify.requests.data.AbstractDataRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetListOfCurrentUsersPlaylistsRequest;
 import se.michaelthelin.spotify.requests.data.playlists.GetListOfUsersPlaylistsRequest;
@@ -187,18 +186,6 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
         }
         catch (ParseException exc) {
             System.err.printf("Parsing error while processing artist with ID: %s - %s%n", artistId, exc.getMessage());
-        }
-        return response;
-    }
-
-    @NotNull
-    private static JSONObject executeRequest(AbstractDataRequest req) {
-        JSONObject response = new JSONObject();
-        try {
-            response = new JSONObject(req.execute());
-        }
-        catch (IOException | SpotifyWebApiException | ParseException exc) {
-            defaultExceptionMessage(exc);
         }
         return response;
     }
