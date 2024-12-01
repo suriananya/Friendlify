@@ -239,8 +239,6 @@ public class Main {
         backToMenuButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
     }
 
-
-
     private static void styleButton(RoundedButton profileButton) {
         profileButton.setFont(new Font("Arial", Font.BOLD, 14));
         profileButton.setFocusPainted(false);
@@ -250,7 +248,6 @@ public class Main {
         profileButton.setOpaque(true);
         profileButton.setContentAreaFilled(true); // Ensures no default button styling
     }
-
 
     private static void styleTextField(JTextField textField) {
         textField.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -299,10 +296,6 @@ public class Main {
         songs.put("song2", new Song("Song 2", "Artist 2", Arrays.asList("Rock", "Alternative")));
         return songs;
     }
-
-
-
-
 
     private static boolean authenticate(SpotifyInteractor interactor, JFrame frame) {
                 // Redirect the standard output to capture the printed URI
