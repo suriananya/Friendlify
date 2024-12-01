@@ -71,17 +71,17 @@ public class UserProfile extends AbstractUserProfile{
 
     /**
      * More readable alternative to overloading getFriendsList.
-     * Handles display_name collection logic for you.
+     * Handles displayName collection logic for you.
      * @return a list of friend display names.
      */
     public List<String> getFriendsListNames() {
-        return getFriendsList("display_name");
+        return getFriendsList("displayName");
     }
 
     /**
      * An overloaded version for getFriendsList.
      * Instead, in this case, you get to choose what information to get, instead of all of it.
-     * @param type the type of information. Accepted values are "id" and "display_name".
+     * @param type the type of information. Accepted values are "id" and "displayName".
      * @return a list of friend ids or display names.
      */
     public List<String> getFriendsList(String type) {

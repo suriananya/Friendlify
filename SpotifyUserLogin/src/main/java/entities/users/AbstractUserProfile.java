@@ -135,7 +135,7 @@ public abstract class AbstractUserProfile {
         // Fetch user profile
         JSONObject userProfileJson = this.getUserProfileJSON();
         System.out.printf("User Profile Response: %s%n", userProfileJson); // Debugging line
-        fetchedUsername = userProfileJson.optString("display_name",
+        fetchedUsername = userProfileJson.optString("displayName",
                 userProfileJson.optString("id", "Unknown User"));
         fetchedUserID = userProfileJson.optString("id", "Unknown ID"); // Fetch user ID from profile
 
