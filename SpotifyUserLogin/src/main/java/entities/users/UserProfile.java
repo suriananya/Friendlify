@@ -26,7 +26,7 @@ public class UserProfile {
             // Fetch user profile
             JSONObject userProfileJson = interactor.getCurrentUserProfile();
             System.out.println("User Profile Response: " + userProfileJson); // Debugging line
-            fetchedUsername = userProfileJson.optString("display_name", userProfileJson.optString("id", "Unknown User"));
+            fetchedUsername = userProfileJson.optString("displayName", userProfileJson.optString("id", "Unknown User"));
             fetchedUserID = userProfileJson.optString("id", "Unknown ID"); // Fetch user ID from profile
 
             // Fetch playlists and determine genres/artists (as before)
@@ -40,7 +40,7 @@ public class UserProfile {
 
                     JSONObject playlistOwner = playlist.getJSONObject("owner");
                     if (!Objects.equals(playlistOwner.getString("id"), fetchedUserID)) {
-                        addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("display_name"));
+                        addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("displayName"));
                     }
 
                     JSONObject playlistItemsJson = interactor.getPlaylistItems(playlistId, 10, 0);
@@ -104,7 +104,7 @@ public class UserProfile {
     }
 
     private void addToFriendsList(String id, String displayName) {
-        JSONObject friendsJson = new JSONObject().put("id", id).put("display_name", displayName);
+        JSONObject friendsJson = new JSONObject().put("id", id).put("displayName", displayName);
         this.friendsList.put(friendsJson);
     }
 
