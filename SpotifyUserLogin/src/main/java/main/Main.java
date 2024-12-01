@@ -27,7 +27,6 @@ public class Main {
     private static final String DATA_FILE = System.getProperty("user.home") + "/user_data.txt";
 
     public static void main(String[] args) {
-        UserProfile userProfile = loadOrCreateUserProfile();
         SpotifyInteractor interactor = new SpotifyInteractor();
 
         JFrame frame = new JFrame("Spotify Application");
@@ -40,6 +39,7 @@ public class Main {
             System.exit(1);
         }
 
+        UserProfile userProfile = loadOrCreateUserProfile(interactor);
         Map<String, Song> friendsSongs = fetchFriendsSongs();
 
         EditPreferencesUseCase useCase = new EditPreferencesUseCase(interactor, userProfile);
@@ -265,7 +265,7 @@ public class Main {
         return UUID.randomUUID().toString();
     }
 
-    private static UserProfile loadOrCreateUserProfile() {
+    private static UserProfile loadOrCreateUserProfile(SpotifyInteractor interactor) {
         File file = new File(DATA_FILE);
 
         if (file.exists()) {
@@ -279,8 +279,7 @@ public class Main {
             }
         }
 
-        String userId = UUID.randomUUID().toString();
-        return new UserProfile(userId, Arrays.asList("Pop", "Rock"), Arrays.asList("Artist1", "Artist2"));
+        return new UserProfile(interactor);
     }
 
     private static void saveUserProfile(UserProfile userProfile) {
