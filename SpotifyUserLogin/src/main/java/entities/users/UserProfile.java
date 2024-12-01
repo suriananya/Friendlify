@@ -13,38 +13,47 @@ public class UserProfile extends AbstractUserProfile{
 
     public UserProfile(SpotifyInteractor interactor) {
         super(interactor);
+        initFriendsList();
     }
 
     public UserProfile(String userId, List<String> genres, List<String> artists) {
         super(userId, genres, artists);
     }
 
-    private void initFriendsList(JSONObject playlist, String fetchedUserID) {
-        JSONObject playlistOwner = playlist.getJSONObject("owner");
-        if (!Objects.equals(playlistOwner.getString("id"), fetchedUserID)) {
-            addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("displayName"));
+    /**
+     * Initializes the friends list with a workaround method.
+     * <p>
+     * The Spotify Web API does not allow us to fetch who a user is following, and a user's followers.
+     * Therefore, the method used to determine if someone is a "friend" is to check their added playlists,
+     * and if they have added someone else's playlist, then add that person as a friend.
+     */
+    private void initFriendsList() {
+        JSONObject playlistsJSON = this.getUserPlaylistsJSON(5, 0);
+
+        // Validate this user's playlists to confirm it is possible to look at them
+        if (playlistsJSON == null || !playlistsJSON.has("items")) {
+            System.out.println("User does not appear to have playlists.");
+            return;
+        }
+
+        // Collect their list of playlists from the initial API response
+        JSONArray playlists = playlistsJSON.getJSONArray("items");
+        playlists = Utility.sanitizeJSONArray(playlists);
+
+        // Loop through the playlists to check their owners
+        for (int i = 0; i < playlists.length(); i++) {
+            JSONObject playlistOwner = playlists.getJSONObject(i).getJSONObject("owner");
+
+            // Check if the playlist owner is the same as the current user. If not, add them as a friend
+            if (!Objects.equals(playlistOwner.getString("id"), this.userID)) {
+                addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("displayName"));
+            }
         }
     }
 
     private void addToFriendsList(String id, String displayName) {
         JSONObject friendsJson = new JSONObject().put("id", id).put("displayName", displayName);
         this.friendsList.put(friendsJson);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getUserId() {
-        return userID;  // Return user ID
-    }
-
-    public List<String> getPreferredGenres() {
-        return preferredGenres;
-    }
-
-    public List<String> getPreferredArtists() {
-        return preferredArtists;
     }
 
     public JSONArray getFriendsList() {
@@ -82,6 +91,16 @@ public class UserProfile extends AbstractUserProfile{
             temp.add(friendStat);
         }
         return temp;
+    }
+
+    @Override
+    JSONObject getUserPlaylistsJSON(int limit, int offset) {
+        return interactor.getCurrentUserPlaylists(limit, offset);
+    }
+
+    @Override
+    JSONObject getUserProfileJSON() {
+        return interactor.getCurrentUserProfile();
     }
 
     /**
