@@ -132,6 +132,10 @@ public abstract class AbstractSpotifyInteractor {
      */
     public abstract JSONObject getUserProfile(String userId);
 
+    void defaultErrorMessage(Exception exc) {
+        System.out.printf("Error: %s%n", exc.getMessage());
+    }
+
     // *** Beyond this point, there should only be default getter and setter methods ***
 
     public String getCode() {
