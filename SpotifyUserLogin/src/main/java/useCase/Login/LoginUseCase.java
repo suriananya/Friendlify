@@ -1,4 +1,4 @@
-package useCase;
+package useCase.Login;
 
 public class LoginUseCase {
     public LoginResult execute(String username, String password) {

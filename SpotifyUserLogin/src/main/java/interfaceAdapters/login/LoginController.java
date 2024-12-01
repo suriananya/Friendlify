@@ -1,8 +1,8 @@
 package interfaceAdapters.login;
 
-import useCase.LoginResult;
-import useCase.LoginUseCase;
-import view.SpotifyLoginView;
+import useCase.Login.LoginResult;
+import useCase.Login.LoginUseCase;
+import view.Menu.SpotifyLoginView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

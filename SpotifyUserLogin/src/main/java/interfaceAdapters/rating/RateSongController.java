@@ -1,6 +1,6 @@
 package interfaceAdapters.rating;
 
-import useCase.RateSongUseCase;
+import useCase.Rating.RateSongUseCase;
 import entities.Song;
 
 import java.util.Map;

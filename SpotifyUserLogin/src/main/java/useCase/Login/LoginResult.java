@@ -1,4 +1,4 @@
-package useCase;
+package useCase.Login;
 
 public class LoginResult {
     private final boolean success;
