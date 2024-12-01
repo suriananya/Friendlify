@@ -1,4 +1,4 @@
-package useCase;
+package useCase.Rating;
 
 import entities.Rating;
 import entities.Song;

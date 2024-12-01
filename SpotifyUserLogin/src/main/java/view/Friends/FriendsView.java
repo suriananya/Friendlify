@@ -1,4 +1,4 @@
-package view;
+package view.Friends;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

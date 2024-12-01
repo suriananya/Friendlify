@@ -1,7 +1,8 @@
-package view;
+package view.Menu;
 
 import interfaceAdapters.login.LoginState;
 import interfaceAdapters.login.LoginViewModel;
+import view.LabelTextPanel;
 
 import javax.swing.*;
 import java.awt.*;
