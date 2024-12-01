@@ -10,10 +10,17 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Unit tests for the RateSongUseCase.
+ */
 public class RateSongUseCaseTest {
+
+    /**
+     * Tests the rateSong method to ensure it correctly adds a rating to a song.
+     */
     @Test
     public void testRateSong() {
-        // Mock data created
+        // Arrange: Mock data created
         List<String> genre = Arrays.asList("Jazz", "RnB");
         Song song = new Song("Test Song", "Test Artist", genre);
         String userId = "user123";
@@ -21,10 +28,10 @@ public class RateSongUseCaseTest {
         String comment = "Amazing song!";
         RateSongUseCase rateSongUseCase = new RateSongUseCase();
 
-        // Act
+        // Act: Perform the rating
         rateSongUseCase.rateSong(song, userId, score, comment);
 
-        // Assert
+        // Assert: Validate the added rating
         assertEquals(String.valueOf(1), song.getRatings().size(), 1);
         Rating addedRating = song.getRatings().get(0);
         assertEquals(userId, addedRating.getUserId(), "user123");
