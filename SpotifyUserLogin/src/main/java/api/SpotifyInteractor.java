@@ -45,6 +45,10 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
         }
     }
 
+    /**
+     * JavaDoc listed in inherited method.
+     * @see AbstractSpotifyInteractor
+     */
     public void authorizationCode() {
         // Build the request
         final AuthorizationCodeRequest authorizationCodeRequest = this.api.authorizationCode(this.getCode())
@@ -64,6 +68,10 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
         }
     }
 
+    /**
+     * JavaDoc listed in inherited method.
+     * @see AbstractSpotifyInteractor
+     */
     public void authorizationCodeUri() {
         // Build the request
         final AuthorizationCodeUriRequest authorizationCodeUriRequest = this.api.authorizationCodeUri()
@@ -76,6 +84,10 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
         System.out.printf("Application Authorization: %s%n", uri.toString());
     }
 
+    /**
+     * JavaDoc listed in inherited method.
+     * @see AbstractSpotifyInteractor
+     */
     public void login() {
         System.out.println("Click on this link below to authenticate your account.");
         authorizationCodeUri();
