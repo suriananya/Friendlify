@@ -76,6 +76,8 @@ public abstract class AbstractUserProfile {
         JSONObject playlistsJson = this.getUserPlaylistsJSON(5, 0);
         if (playlistsJson != null && playlistsJson.has("items")) {
             JSONArray playlists = playlistsJson.getJSONArray("items");
+            playlists =
+
             for (int i = 0; i < playlists.length(); i++) {
                 JSONObject playlist = playlists.getJSONObject(i);
                 String playlistId = playlist.getString("id");

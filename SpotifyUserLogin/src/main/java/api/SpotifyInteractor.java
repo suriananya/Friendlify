@@ -13,6 +13,7 @@ import se.michaelthelin.spotify.requests.data.playlists.GetListOfUsersPlaylistsR
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetUsersProfileRequest;
+import utilities.Utility;
 
 import java.io.IOException;
 import java.net.URI;
