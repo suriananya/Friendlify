@@ -24,6 +24,14 @@ public class Rating implements Serializable {
     public String getComment() {
         return comment;
     }
+
+    public void setScore(int newScore) {
+
+    }
+
+    public void setComment(String newComment) {
+
+    }
 }
 
 
