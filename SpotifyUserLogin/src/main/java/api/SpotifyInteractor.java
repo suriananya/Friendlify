@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.Scanner;
 
 import org.apache.hc.core5.http.ParseException;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -40,7 +41,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
 
         }
         catch (IOException | SpotifyWebApiException | ParseException exc) {
-            defaultErrorMessage(exc);
+            defaultExceptionMessage(exc);
         }
     }
 
@@ -59,7 +60,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
 
         }
         catch (IOException | SpotifyWebApiException | ParseException exc) {
-            defaultErrorMessage(exc);
+            defaultExceptionMessage(exc);
         }
     }
 
@@ -102,26 +103,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
         // Build the request
         final GetArtistRequest getArtistRequest = this.api.getArtist(artistId).build();
 
-        JSONObject response = new JSONObject();
-        try {
-            // Execute the request and return the result as a JSONObject
-            response = new JSONObject(getArtistRequest.execute());
-        }
-        catch (IOException exc) {
-            System.err.printf("IO Error while fetching artist with ID: %s - %s%n", artistId, exc.getMessage());
-        }
-        catch (SpotifyWebApiException exc) {
-            System.err.printf("Spotify API Error while fetching artist with ID: %s - %s%n", artistId, exc.getMessage());
-            if (exc.getMessage().contains("rate limit")) {
-                System.err.println("Rate limit exceeded. Consider retrying after some time.");
-            }
-        }
-        catch (ParseException exc) {
-            System.err.printf("Parsing error while processing artist with ID: %s - %s%n", artistId, exc.getMessage());
-        }
-
-        // Return an empty JSON object instead of null
-        return response;
+        return executeGetArtistRequest(artistId, getArtistRequest);
     }
 
     @Override
@@ -176,13 +158,35 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
         return executeRequest(getUsersProfileRequest);
     }
 
-    private JSONObject executeRequest(AbstractDataRequest req) {
+    @NotNull
+    private static JSONObject executeGetArtistRequest(String artistId, GetArtistRequest getArtistRequest) {
+        JSONObject response = new JSONObject();
+        try {
+            response = new JSONObject(getArtistRequest.execute());
+        }
+        catch (IOException exc) {
+            System.err.printf("IO Error while fetching artist with ID: %s - %s%n", artistId, exc.getMessage());
+        }
+        catch (SpotifyWebApiException exc) {
+            System.err.printf("Spotify API Error while fetching artist with ID: %s - %s%n", artistId, exc.getMessage());
+            if (exc.getMessage().contains("rate limit")) {
+                System.err.println("Rate limit exceeded. Consider retrying after some time.");
+            }
+        }
+        catch (ParseException exc) {
+            System.err.printf("Parsing error while processing artist with ID: %s - %s%n", artistId, exc.getMessage());
+        }
+        return response;
+    }
+
+    @NotNull
+    private static JSONObject executeRequest(AbstractDataRequest req) {
         JSONObject response = new JSONObject();
         try {
             response = new JSONObject(req.execute());
         }
         catch (IOException | SpotifyWebApiException | ParseException exc) {
-            defaultErrorMessage(exc);
+            defaultExceptionMessage(exc);
         }
         return response;
     }

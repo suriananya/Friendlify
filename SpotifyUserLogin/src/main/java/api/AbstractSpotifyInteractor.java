@@ -3,7 +3,6 @@ package api;
 import org.json.JSONObject;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
-import se.michaelthelin.spotify.requests.AbstractRequest;
 
 import java.net.URI;
 
@@ -132,7 +131,11 @@ public abstract class AbstractSpotifyInteractor {
      */
     public abstract JSONObject getUserProfile(String userId);
 
-    void defaultErrorMessage(Exception exc) {
+    /**
+     * Prints an often used default exception message
+     * @param exc the exception received.
+     */
+    static void defaultExceptionMessage(Exception exc) {
         System.out.printf("Error: %s%n", exc.getMessage());
     }
 
