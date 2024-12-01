@@ -1,8 +1,10 @@
 package entities.users;
 
+import api.AbstractSpotifyInteractor;
 import api.SpotifyInteractor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import utilities.Utility;
 
 import java.util.*;
 
@@ -13,8 +15,8 @@ import java.util.*;
 public abstract class AbstractUserProfile {
     final SpotifyInteractor interactor;
 
-    String username;
-    String userID;  // Add a userID field
+    final String username;
+    final String userID;  // Add a userID field
 
     List<String> preferredGenres;
     List<String> preferredArtists;
@@ -39,14 +41,24 @@ public abstract class AbstractUserProfile {
      */
     public AbstractUserProfile(SpotifyInteractor interactor) {
         this.interactor = interactor;
+
+        Map<String, String> tempUserInfo = new HashMap<>();
+
         try {
-            this.initUserInfo();
-            this.initMusicPreference();
+            tempUserInfo = initUserInfo();
+            initMusicPreference();
+
         } catch (Exception e) {
-            System.err.println("Error fetching user profile data: " + e.getMessage());
-            this.preferredGenres = new ArrayList<>(Collections.singleton("Unknown"));
-            this.preferredArtists = new ArrayList<>(Collections.singleton("Unknown"));
+            System.err.printf("Error fetching user profile data: %s%n", e.getMessage());
+
+            tempUserInfo.put("username", "Unknown");
+            tempUserInfo.put("userID", "Unknown");
+            this.preferredGenres = new ArrayList<>(Collections.singletonList("Unknown"));
+            this.preferredArtists = new ArrayList<>(Collections.singletonList("Unknown"));
         }
+
+        this.username = tempUserInfo.get("username");
+        this.userID = tempUserInfo.get("userID");
     }
 
     /**
@@ -62,6 +74,8 @@ public abstract class AbstractUserProfile {
         JSONObject playlistsJson = this.getUserPlaylistsJSON(5, 0);
         if (playlistsJson != null && playlistsJson.has("items")) {
             JSONArray playlists = playlistsJson.getJSONArray("items");
+            playlists = Utility.sanitizeJSONArray(playlists);
+
             for (int i = 0; i < playlists.length(); i++) {
                 JSONObject playlist = playlists.getJSONObject(i);
                 String playlistId = playlist.getString("id");
@@ -114,25 +128,27 @@ public abstract class AbstractUserProfile {
     /**
      * Initializes the user's username and ID.
      */
-    void initUserInfo() {
+    Map<String, String> initUserInfo() {
         String fetchedUsername;
         String fetchedUserID;  // Initialize userID
 
         // Fetch user profile
         JSONObject userProfileJson = this.getUserProfileJSON();
         System.out.printf("User Profile Response: %s%n", userProfileJson); // Debugging line
-        fetchedUsername = userProfileJson.optString("display_name",
+        fetchedUsername = userProfileJson.optString("displayName",
                 userProfileJson.optString("id", "Unknown User"));
         fetchedUserID = userProfileJson.optString("id", "Unknown ID"); // Fetch user ID from profile
 
-        this.username = fetchedUsername;
-        this.userID = fetchedUserID; // Set user ID
+        Map<String, String> temp = new HashMap<>();
+        temp.put("username", fetchedUsername);
+        temp.put("userID", fetchedUserID);
+        return temp;
     }
 
     /**
      * An abstract method intended to swap between getting current user and a chosen user's
      * playlists depending on the user.
-     * @see api.AbstractSpotifyInteractor
+     * @see AbstractSpotifyInteractor
      * @param limit the maximum number of items to return.
      * @param offset the index of the first item to return.
      * @return the response from the Spotify API. Empty JSON if there is an error.
@@ -156,7 +172,7 @@ public abstract class AbstractUserProfile {
         return preferredGenres;
     }
 
-    public String getUserID() {
+    public String getUserId() {
         return userID;
     }
 

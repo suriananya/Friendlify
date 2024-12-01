@@ -3,125 +3,57 @@ package entities.users;
 import api.SpotifyInteractor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import utilities.Utility;
 
 import java.util.*;
 import java.io.*;
 
-public class UserProfile {
-    private final String username;
-    private final String userID;  // Add a userID field
+public class UserProfile extends AbstractUserProfile{
     private final JSONArray friendsList = new JSONArray();
-    private List<String> preferredGenres;
-    private List<String> preferredArtists;
 
     public UserProfile(SpotifyInteractor interactor) {
-        String fetchedUsername = "Unknown User";
-        String fetchedUserID = "Unknown ID";  // Initialize userID
-        List<String> genres = new ArrayList<>();
-        List<String> artists = new ArrayList<>();
-        Map<String, Integer> genreCounts = new HashMap<>();
-        Map<String, Integer> artistCounts = new HashMap<>();
-
-        try {
-            // Fetch user profile
-            JSONObject userProfileJson = interactor.getCurrentUserProfile();
-            System.out.println("User Profile Response: " + userProfileJson); // Debugging line
-            fetchedUsername = userProfileJson.optString("display_name", userProfileJson.optString("id", "Unknown User"));
-            fetchedUserID = userProfileJson.optString("id", "Unknown ID"); // Fetch user ID from profile
-
-            // Fetch playlists and determine genres/artists (as before)
-            JSONObject playlistsJson = interactor.getCurrentUserPlaylists(5, 0);
-            if (playlistsJson != null && playlistsJson.has("items")) {
-                JSONArray playlists = playlistsJson.getJSONArray("items");
-                playlists = Utility.sanitizeJSONArray(playlists);
-                for (int i = 0; i < playlists.length(); i++) {
-                    JSONObject playlist = playlists.getJSONObject(i);
-                    String playlistId = playlist.getString("id");
-
-                    JSONObject playlistOwner = playlist.getJSONObject("owner");
-                    if (!Objects.equals(playlistOwner.getString("id"), fetchedUserID)) {
-                        addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("display_name"));
-                    }
-
-                    JSONObject playlistItemsJson = interactor.getPlaylistItems(playlistId, 10, 0);
-                    if (playlistItemsJson != null && playlistItemsJson.has("items")) {
-                        JSONArray items = playlistItemsJson.getJSONArray("items");
-                        for (int j = 0; j < items.length(); j++) {
-                            JSONObject track = items.getJSONObject(j).getJSONObject("track");
-                            JSONArray trackArtists = track.getJSONArray("artists");
-
-                            for (int k = 0; k < trackArtists.length(); k++) {
-                                String artistId = trackArtists.getJSONObject(k).getString("id");
-                                String artistName = trackArtists.getJSONObject(k).getString("name");
-                                artistCounts.put(artistName, artistCounts.getOrDefault(artistName, 0) + 1);
-
-                                // Fetch artist genres
-                                JSONObject artistData = interactor.getArtist(artistId);
-                                if (artistData != null && artistData.has("genres")) {
-                                    JSONArray artistGenres = artistData.getJSONArray("genres");
-                                    for (int g = 0; g < artistGenres.length(); g++) {
-                                        String genre = artistGenres.getString(g);
-                                        genreCounts.put(genre, genreCounts.getOrDefault(genre, 0) + 1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Determine top genre and artist
-            String topGenre = genreCounts.entrySet().stream()
-                    .max(Map.Entry.comparingByValue())
-                    .map(Map.Entry::getKey)
-                    .orElse("Unknown");
-
-            String topArtist = artistCounts.entrySet().stream()
-                    .max(Map.Entry.comparingByValue())
-                    .map(Map.Entry::getKey)
-                    .orElse("Unknown");
-
-            genres.add(topGenre);
-            artists.add(topArtist);
-
-        } catch (Exception e) {
-            System.err.println("Error fetching user profile data: " + e.getMessage());
-            genres.add("Unknown");
-            artists.add("Unknown");
-        }
-
-        this.username = fetchedUsername;
-        this.userID = fetchedUserID; // Set user ID
-        this.preferredGenres = genres;
-        this.preferredArtists = artists;
+        super(interactor);
+        initFriendsList();
     }
 
     public UserProfile(String userId, List<String> genres, List<String> artists) {
-        this.username = userId;
-        this.userID = userId;  // Set user ID
-        this.preferredGenres = genres;
-        this.preferredArtists = artists;
+        super(userId, genres, artists);
+    }
+
+    /**
+     * Initializes the friends list with a workaround method.
+     * <p>
+     * The Spotify Web API does not allow us to fetch who a user is following, and a user's followers.
+     * Therefore, the method used to determine if someone is a "friend" is to check their added playlists,
+     * and if they have added someone else's playlist, then add that person as a friend.
+     */
+    private void initFriendsList() {
+        JSONObject playlistsJSON = this.getUserPlaylistsJSON(5, 0);
+
+        // Validate this user's playlists to confirm it is possible to look at them
+        if (playlistsJSON == null || !playlistsJSON.has("items")) {
+            System.out.println("User does not appear to have playlists.");
+            return;
+        }
+
+        // Collect their list of playlists from the initial API response
+        JSONArray playlists = playlistsJSON.getJSONArray("items");
+        playlists = Utility.sanitizeJSONArray(playlists);
+
+        // Loop through the playlists to check their owners
+        for (int i = 0; i < playlists.length(); i++) {
+            JSONObject playlistOwner = playlists.getJSONObject(i).getJSONObject("owner");
+
+            // Check if the playlist owner is the same as the current user. If not, add them as a friend
+            if (!Objects.equals(playlistOwner.getString("id"), this.userID)) {
+                addToFriendsList(playlistOwner.getString("id"), playlistOwner.getString("displayName"));
+            }
+        }
     }
 
     private void addToFriendsList(String id, String displayName) {
-        JSONObject friendsJson = new JSONObject().put("id", id).put("display_name", displayName);
+        JSONObject friendsJson = new JSONObject().put("id", id).put("displayName", displayName);
         this.friendsList.put(friendsJson);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getUserId() {
-        return userID;  // Return user ID
-    }
-
-    public List<String> getPreferredGenres() {
-        return preferredGenres;
-    }
-
-    public List<String> getPreferredArtists() {
-        return preferredArtists;
     }
 
     public JSONArray getFriendsList() {
@@ -139,17 +71,17 @@ public class UserProfile {
 
     /**
      * More readable alternative to overloading getFriendsList.
-     * Handles display_name collection logic for you.
+     * Handles displayName collection logic for you.
      * @return a list of friend display names.
      */
     public List<String> getFriendsListNames() {
-        return getFriendsList("display_name");
+        return getFriendsList("displayName");
     }
 
     /**
      * An overloaded version for getFriendsList.
      * Instead, in this case, you get to choose what information to get, instead of all of it.
-     * @param type the type of information. Accepted values are "id" and "display_name".
+     * @param type the type of information. Accepted values are "id" and "displayName".
      * @return a list of friend ids or display names.
      */
     public List<String> getFriendsList(String type) {
@@ -159,6 +91,16 @@ public class UserProfile {
             temp.add(friendStat);
         }
         return temp;
+    }
+
+    @Override
+    JSONObject getUserPlaylistsJSON(int limit, int offset) {
+        return interactor.getCurrentUserPlaylists(limit, offset);
+    }
+
+    @Override
+    JSONObject getUserProfileJSON() {
+        return interactor.getCurrentUserProfile();
     }
 
     /**

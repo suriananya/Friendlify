@@ -3,7 +3,9 @@ package entities.users;
 import api.SpotifyInteractor;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FriendProfile extends AbstractUserProfile{
     public FriendProfile(String userId, List<String> genres, List<String> artists) {
@@ -12,11 +14,10 @@ public class FriendProfile extends AbstractUserProfile{
 
     public FriendProfile(SpotifyInteractor interactor, String id) {
         super(interactor);
-        this.userID = id;
     }
 
     @Override
-    void initUserInfo() {
+    Map<String, String> initUserInfo() {
         String fetchedUsername;
 
         // Fetch user profile
@@ -25,7 +26,9 @@ public class FriendProfile extends AbstractUserProfile{
         fetchedUsername = userProfileJson.optString("display_name",
                 userProfileJson.optString("id", "Unknown User"));
 
-        this.username = fetchedUsername;
+        Map<String, String> temp = new HashMap<>();
+        temp.put("display_name", fetchedUsername);
+        return temp;
     }
 
     @Override

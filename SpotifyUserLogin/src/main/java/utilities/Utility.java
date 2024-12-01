@@ -1,4 +1,6 @@
-package api;
+package utilities;
+
+import org.json.JSONArray;
 
 public class Utility {
     /**
@@ -14,5 +16,20 @@ public class Utility {
         int start = str.indexOf(first) + first.length();
         int end = str.lastIndexOf(last);
         return str.substring(start, end);
+    }
+
+    /**
+     * Removes all the null values from a JSONArray.
+     * @param unsanitized an arbitrary JSONArray, possibly with null values.
+     * @return a version of the above JSONArray without any null values.
+     */
+    public static JSONArray sanitizeJSONArray(JSONArray unsanitized) {
+        JSONArray sanitized = new JSONArray();
+        for (int i = 0; i < unsanitized.length(); i++) {
+            if (!unsanitized.isNull(i)) {
+                sanitized.put(unsanitized.getJSONObject(i));
+            }
+        }
+        return sanitized;
     }
 }

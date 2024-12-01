@@ -13,6 +13,7 @@ import se.michaelthelin.spotify.requests.data.playlists.GetListOfUsersPlaylistsR
 import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetUsersProfileRequest;
+import utilities.Utility;
 
 import java.io.IOException;
 import java.net.URI;
@@ -62,7 +63,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         // Build the request
         final AuthorizationCodeUriRequest authorizationCodeUriRequest = this.api.authorizationCodeUri()
                 .scope(applicationScope)
-                .show_dialog((true))
+                .show_dialog(false)
                 .build();
         // Make the request
         final URI uri = authorizationCodeUriRequest.execute();
