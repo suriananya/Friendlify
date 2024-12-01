@@ -172,7 +172,7 @@ public abstract class AbstractUserProfile {
         return preferredGenres;
     }
 
-    public String getUserID() {
+    public String getUserId() {
         return userID;
     }
 
