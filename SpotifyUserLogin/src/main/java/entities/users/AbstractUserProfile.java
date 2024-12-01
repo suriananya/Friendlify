@@ -1,5 +1,6 @@
 package entities.users;
 
+import api.AbstractSpotifyInteractor;
 import api.SpotifyInteractor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,11 +14,11 @@ import java.util.*;
 public abstract class AbstractUserProfile {
     final SpotifyInteractor interactor;
 
-    String username;
-    String userID;  // Add a userID field
+    final String username;
+    final String userID;  // Add a userID field
 
-    List<String> preferredGenres;
-    List<String> preferredArtists;
+    final List<String> preferredGenres;
+    final List<String> preferredArtists;
 
     /**
      * Simpler constructor for easier mocking and testing.
@@ -39,20 +40,33 @@ public abstract class AbstractUserProfile {
      */
     public AbstractUserProfile(SpotifyInteractor interactor) {
         this.interactor = interactor;
+
+        Map<String, String> tempUserInfo = new HashMap<>();
+        Map<String, List<String>> tempPreferences = new HashMap<>();
+
         try {
-            this.initUserInfo();
-            this.initMusicPreference();
+            tempUserInfo = initUserInfo();
+            tempPreferences = initMusicPreference();
+
         } catch (Exception e) {
-            System.err.println("Error fetching user profile data: " + e.getMessage());
-            this.preferredGenres = new ArrayList<>(Collections.singleton("Unknown"));
-            this.preferredArtists = new ArrayList<>(Collections.singleton("Unknown"));
+            System.err.printf("Error fetching user profile data: %s%n", e.getMessage());
+
+            tempUserInfo.put("username", "Unknown");
+            tempUserInfo.put("userID", "Unknown");
+            tempPreferences.put("genres", new ArrayList<>(Collections.singletonList("Unknown")));
+            tempPreferences.put("artists", new ArrayList<>(Collections.singletonList("Unknown")));
         }
+
+        this.username = tempUserInfo.get("username");
+        this.userID = tempUserInfo.get("userID");
+        this.preferredGenres = tempPreferences.get("genres");
+        this.preferredArtists = tempPreferences.get("artists");
     }
 
     /**
      * Initializes the user's preferred artists and genres.
      */
-    void initMusicPreference() {
+    Map<String, List<String>> initMusicPreference() {
         List<String> genres = new ArrayList<>();
         List<String> artists = new ArrayList<>();
         Map<String, Integer> genreCounts = new HashMap<>();
@@ -107,14 +121,16 @@ public abstract class AbstractUserProfile {
         genres.add(topGenre);
         artists.add(topArtist);
 
-        this.preferredGenres = genres;
-        this.preferredArtists = artists;
+        Map<String, List<String>> temp = new HashMap<>();
+        temp.put("genres", genres);
+        temp.put("artists", artists);
+        return temp;
     }
 
     /**
      * Initializes the user's username and ID.
      */
-    void initUserInfo() {
+    Map<String, String> initUserInfo() {
         String fetchedUsername;
         String fetchedUserID;  // Initialize userID
 
@@ -125,14 +141,16 @@ public abstract class AbstractUserProfile {
                 userProfileJson.optString("id", "Unknown User"));
         fetchedUserID = userProfileJson.optString("id", "Unknown ID"); // Fetch user ID from profile
 
-        this.username = fetchedUsername;
-        this.userID = fetchedUserID; // Set user ID
+        Map<String, String> temp = new HashMap<>();
+        temp.put("username", fetchedUsername);
+        temp.put("userID", fetchedUserID);
+        return temp;
     }
 
     /**
      * An abstract method intended to swap between getting current user and a chosen user's
      * playlists depending on the user.
-     * @see api.AbstractSpotifyInteractor
+     * @see AbstractSpotifyInteractor
      * @param limit the maximum number of items to return.
      * @param offset the index of the first item to return.
      * @return the response from the Spotify API. Empty JSON if there is an error.
