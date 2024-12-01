@@ -4,6 +4,7 @@ import api.AbstractSpotifyInteractor;
 import api.SpotifyInteractor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import utilities.Utility;
 
 import java.util.*;
 
@@ -76,7 +77,7 @@ public abstract class AbstractUserProfile {
         JSONObject playlistsJson = this.getUserPlaylistsJSON(5, 0);
         if (playlistsJson != null && playlistsJson.has("items")) {
             JSONArray playlists = playlistsJson.getJSONArray("items");
-            playlists =
+            playlists = Utility.sanitizeJSONArray(playlists);
 
             for (int i = 0; i < playlists.length(); i++) {
                 JSONObject playlist = playlists.getJSONObject(i);
