@@ -2,6 +2,9 @@ package utilities;
 
 import org.json.JSONArray;
 
+/**
+ * A utility class where public, static methods potentially usable by everyone can be placed.
+ */
 public class Utility {
     /**
      * Splice a string from the first occurrence of first to the last occurrence of last. Not inclusive.
@@ -13,8 +16,8 @@ public class Utility {
      * @return the spliced string.
      */
     public static String spliceString(String str, String first, String last) {
-        int start = str.indexOf(first) + first.length();
-        int end = str.lastIndexOf(last);
+        final int start = str.indexOf(first) + first.length();
+        final int end = str.lastIndexOf(last);
         return str.substring(start, end);
     }
 
@@ -24,7 +27,7 @@ public class Utility {
      * @return a version of the above JSONArray without any null values.
      */
     public static JSONArray sanitizeJSONArray(JSONArray unsanitized) {
-        JSONArray sanitized = new JSONArray();
+        final JSONArray sanitized = new JSONArray();
         for (int i = 0; i < unsanitized.length(); i++) {
             if (!unsanitized.isNull(i)) {
                 sanitized.put(unsanitized.getJSONObject(i));
