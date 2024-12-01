@@ -54,6 +54,7 @@ public class FriendsView extends JPanel {
         friendsPanel.removeAll();
 
         List<String> friendsList = currentUser.getFriendsListNames();
+        System.out.println(friendsList);
 
         if (!friendsList.isEmpty()) {
             handleFriendDisplay(friendsList);

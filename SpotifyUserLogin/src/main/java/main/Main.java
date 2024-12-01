@@ -9,6 +9,8 @@ import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
 import interfaceAdapters.rating.RateSongPresenter;
 import useCase.Editing.EditPreferencesUseCase;
+import view.Friends.FriendsView;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
@@ -68,15 +70,19 @@ public class Main {
 
         RoundedButton profileButton = new RoundedButton("View Profile");
         RoundedButton rateSongsButton = new RoundedButton("Rate Friends' Songs");
+        RoundedButton friendsButton = new RoundedButton("Friends List");
 
         profileButton.setPreferredSize(new Dimension(200, 50));
         rateSongsButton.setPreferredSize(new Dimension(200, 50));
+        friendsButton.setPreferredSize(new Dimension(200, 50));
 
         mainMenuView.add(menuLabel);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 40))); // Spacing
         mainMenuView.add(profileButton);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(rateSongsButton);
+        mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        mainMenuView.add(friendsButton);
 
         // Profile Panel
         RoundedPanel profileView = new RoundedPanel(20);
@@ -226,17 +232,23 @@ public class Main {
             rateSongsView.add(rateButton);
         });
 
+        FriendsView friendsView = new FriendsView();
+        friendsView.displayFriends(userProfile);
+
         // Add panels to frame
         frame.getContentPane().add(mainMenuView, "MainMenu");
         frame.getContentPane().add(profileView, "Profile");
         frame.getContentPane().add(rateSongsView, "RateSongs");
+        frame.getContentPane().add(friendsView, "Friends");
 
         // Navigation
         CardLayout cardLayout = (CardLayout) frame.getContentPane().getLayout();
         profileButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "Profile"));
         rateSongsButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "RateSongs"));
+        friendsButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "Friends"));
         backButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
         backToMenuButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
+        friendsView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
     }
 
 
