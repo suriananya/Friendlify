@@ -2,6 +2,7 @@ package view;
 
 import entities.users.UserProfile;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ public class ProfileView extends JPanel {
     private final JButton backButton;
     private final JButton playlistButton;
     private final JButton ratingsButton;
+    private final JButton surpriseMeButton; // ADDED
 
     public ProfileView() {
         setLayout(new BorderLayout(10, 10));
@@ -53,11 +55,14 @@ public class ProfileView extends JPanel {
         playlistButton = new JButton("Go to Playlist");
         ratingsButton = new JButton("View Ratings & Comments");
         backButton = new JButton("Back to Main Menu");
+        surpriseMeButton = new JButton("Surprise Me");
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(playlistButton);
         buttonPanel.add(ratingsButton);
         buttonPanel.add(backButton);
+        buttonPanel.add(surpriseMeButton);
+
 
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -80,5 +85,10 @@ public class ProfileView extends JPanel {
 
     public void addRatingsButtonListener(ActionListener listener) {
         ratingsButton.addActionListener(listener);
+    }
+
+    public void addSurpriseMeButtonListener(ActionListener listener) {
+        surpriseMeButton.addActionListener(listener);
+
     }
 }

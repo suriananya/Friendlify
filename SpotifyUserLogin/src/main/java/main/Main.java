@@ -9,6 +9,8 @@ import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
 import interfaceAdapters.rating.RateSongPresenter;
 import useCase.Editing.EditPreferencesUseCase;
+import useCase.SurpriseMeInteractor;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
@@ -61,6 +63,7 @@ public class Main {
         mainMenuView.setBackground(new Color(245, 245, 245)); // Light gray background
         mainMenuView.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
+
         JLabel menuLabel = new JLabel("Main Menu");
         menuLabel.setFont(new Font("Arial", Font.BOLD, 28));
         menuLabel.setForeground(Color.BLACK);
@@ -68,15 +71,19 @@ public class Main {
 
         RoundedButton profileButton = new RoundedButton("View Profile");
         RoundedButton rateSongsButton = new RoundedButton("Rate Friends' Songs");
+        RoundedButton surpriseMeButton = new RoundedButton("Surprise Me");
 
         profileButton.setPreferredSize(new Dimension(200, 50));
         rateSongsButton.setPreferredSize(new Dimension(200, 50));
+        surpriseMeButton.setPreferredSize(new Dimension(200, 50));
 
         mainMenuView.add(menuLabel);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 40))); // Spacing
         mainMenuView.add(profileButton);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(rateSongsButton);
+        mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        mainMenuView.add(surpriseMeButton);
 
         // Profile Panel
         RoundedPanel profileView = new RoundedPanel(20);
@@ -174,6 +181,18 @@ public class Main {
                 profileView.repaint();
             } else {
                 JOptionPane.showMessageDialog(frame, "Error updating preferences: " + state.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Add Surprise Me functionality
+        SurpriseMeInteractor surpriseMeInteractor = new SurpriseMeInteractor(new SpotifyInteractor());
+        surpriseMeButton.addActionListener(e -> {
+            try {
+                // Pass 'false' to exclude preferences
+                Song randomSong = surpriseMeInteractor.getRandomSongFromFriends(false);
+                JOptionPane.showMessageDialog(frame, "Playing: " + randomSong.getTitle() + " by " + randomSong.getArtist(), "Surprise Me!", JOptionPane.INFORMATION_MESSAGE);
+            } catch (RuntimeException ex) { // ADDED
+                JOptionPane.showMessageDialog(frame, "No songs found in friends' playlists.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
