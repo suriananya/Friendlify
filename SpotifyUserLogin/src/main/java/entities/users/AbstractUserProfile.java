@@ -18,8 +18,8 @@ public abstract class AbstractUserProfile {
     final String username;
     final String userID;  // Add a userID field
 
-    final List<String> preferredGenres;
-    final List<String> preferredArtists;
+    List<String> preferredGenres;
+    List<String> preferredArtists;
 
     /**
      * Simpler constructor for easier mocking and testing.
@@ -43,31 +43,28 @@ public abstract class AbstractUserProfile {
         this.interactor = interactor;
 
         Map<String, String> tempUserInfo = new HashMap<>();
-        Map<String, List<String>> tempPreferences = new HashMap<>();
 
         try {
             tempUserInfo = initUserInfo();
-            tempPreferences = initMusicPreference();
+            initMusicPreference();
 
         } catch (Exception e) {
             System.err.printf("Error fetching user profile data: %s%n", e.getMessage());
 
             tempUserInfo.put("username", "Unknown");
             tempUserInfo.put("userID", "Unknown");
-            tempPreferences.put("genres", new ArrayList<>(Collections.singletonList("Unknown")));
-            tempPreferences.put("artists", new ArrayList<>(Collections.singletonList("Unknown")));
+            this.preferredGenres = new ArrayList<>(Collections.singletonList("Unknown"));
+            this.preferredArtists = new ArrayList<>(Collections.singletonList("Unknown"));
         }
 
         this.username = tempUserInfo.get("username");
         this.userID = tempUserInfo.get("userID");
-        this.preferredGenres = tempPreferences.get("genres");
-        this.preferredArtists = tempPreferences.get("artists");
     }
 
     /**
      * Initializes the user's preferred artists and genres.
      */
-    Map<String, List<String>> initMusicPreference() {
+    void initMusicPreference() {
         List<String> genres = new ArrayList<>();
         List<String> artists = new ArrayList<>();
         Map<String, Integer> genreCounts = new HashMap<>();
@@ -124,10 +121,8 @@ public abstract class AbstractUserProfile {
         genres.add(topGenre);
         artists.add(topArtist);
 
-        Map<String, List<String>> temp = new HashMap<>();
-        temp.put("genres", genres);
-        temp.put("artists", artists);
-        return temp;
+        this.preferredGenres = genres;
+        this.preferredArtists = artists;
     }
 
     /**
