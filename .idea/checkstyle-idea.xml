@@ -9,6 +9,7 @@
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
+        <ConfigurationLocation id="626c69bd-dea1-475c-8ebd-e95db3fe50fe" type="LOCAL_FILE" scope="All" description="CSC207">$PROJECT_DIR$/SpotifyUserLogin/mystyle.xml</ConfigurationLocation>
       </list>
     </option>
   </component>

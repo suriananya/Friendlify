@@ -1,7 +1,13 @@
 package api;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Scanner;
+
 import org.apache.hc.core5.http.ParseException;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRefreshRequest;
@@ -15,15 +21,11 @@ import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfi
 import se.michaelthelin.spotify.requests.data.users_profile.GetUsersProfileRequest;
 import utilities.Utility;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Scanner;
-
 /**
  * A class to help interact with the SpotifyAPI. I recommend reading:
  * <a href="https://github.com/spotify-web-api-java/spotify-web-api-java">spotify-web-api-java</a>
  */
-public class SpotifyInteractor extends AbstractSpotifyInteractor{
+public class SpotifyInteractor extends AbstractSpotifyInteractor {
     void authorizationCodeRefresh() {
         // Build the request
         final AuthorizationCodeRefreshRequest authorizationCodeRefreshRequest = this.api.authorizationCodeRefresh()
@@ -36,11 +38,16 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
             // Set access and refresh token for further "spotifyApi" object usage
             this.api.setAccessToken(authorizationCodeCredentials.getAccessToken());
 
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
+        }
+        catch (IOException | SpotifyWebApiException | ParseException exc) {
+            defaultExceptionMessage(exc);
         }
     }
 
+    /**
+     * JavaDoc listed in inherited method.
+     * @see AbstractSpotifyInteractor
+     */
     public void authorizationCode() {
         // Build the request
         final AuthorizationCodeRequest authorizationCodeRequest = this.api.authorizationCode(this.getCode())
@@ -54,33 +61,41 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
             this.setAccessToken(authorizationCodeCredentials.getAccessToken());
             this.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
 
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
+        }
+        catch (IOException | SpotifyWebApiException | ParseException exc) {
+            defaultExceptionMessage(exc);
         }
     }
 
+    /**
+     * JavaDoc listed in inherited method.
+     * @see AbstractSpotifyInteractor
+     */
     public void authorizationCodeUri() {
         // Build the request
         final AuthorizationCodeUriRequest authorizationCodeUriRequest = this.api.authorizationCodeUri()
-                .scope(applicationScope)
+                .scope(APPLICATION_SCOPE)
                 .show_dialog(false)
                 .build();
         // Make the request
         final URI uri = authorizationCodeUriRequest.execute();
 
-        System.out.println("Application Authorization: " + uri.toString());
+        System.out.printf("Application Authorization: %s%n", uri.toString());
     }
 
+    /**
+     * JavaDoc listed in inherited method.
+     * @see AbstractSpotifyInteractor
+     */
     public void login() {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.println("Click on this link below to authenticate your account.");
         authorizationCodeUri();
 
+        final Scanner scanner = new Scanner(System.in);
         System.out.println("\nYou should have been lead to a page where you will receive a connection error.");
         System.out.print("Copy the link to that page. Paste it here:");
-        String fullLink = scanner.nextLine();
-        this.setCode(Utility.spliceString(fullLink,"code=",""));
+        final String fullLink = scanner.nextLine();
+        this.setCode(Utility.spliceString(fullLink, "code=", ""));
 
         authorizationCode();
         authorizationCodeRefresh();
@@ -99,24 +114,8 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         // Build the request
         final GetArtistRequest getArtistRequest = this.api.getArtist(artistId).build();
 
-        try {
-            // Execute the request and return the result as a JSONObject
-            return new JSONObject(getArtistRequest.execute());
-        } catch (IOException e) {
-            System.err.println("IO Error while fetching artist with ID: " + artistId + " - " + e.getMessage());
-        } catch (SpotifyWebApiException e) {
-            System.err.println("Spotify API Error while fetching artist with ID: " + artistId + " - " + e.getMessage());
-            if (e.getMessage().contains("rate limit")) {
-                System.err.println("Rate limit exceeded. Consider retrying after some time.");
-            }
-        } catch (ParseException e) {
-            System.err.println("Parsing error while processing artist with ID: " + artistId + " - " + e.getMessage());
-        }
-
-        // Return an empty JSON object instead of null
-        return new JSONObject();
+        return executeGetArtistRequest(artistId, getArtistRequest);
     }
-
 
     @Override
     public JSONObject getPlaylistItems(String playlistId, int limit, int offset) {
@@ -126,14 +125,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
                 .offset(offset)
                 .build();
 
-        try {
-            // Make the request
-            return new JSONObject(getPlaylistsItemsRequest.execute());
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        // Return null after catch (if there is an error)
-        return new JSONObject();
+        return executeRequest(getPlaylistsItemsRequest);
     }
 
     @Override
@@ -145,14 +137,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
                 .offset(offset)
                 .build();
 
-        try {
-            // Make the request
-            return new JSONObject(getListOfCurrentUsersPlaylistsRequest.execute());
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        // Return null after catch (if there is an error)
-        return new JSONObject();
+        return executeRequest(getListOfCurrentUsersPlaylistsRequest);
     }
 
     @Override
@@ -163,14 +148,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
                 .offset(offset)
                 .build();
 
-        try {
-            // Make the request
-            return new JSONObject(getListOfUsersPlaylistsRequest.execute());
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        // Return null after catch (if there is an error)
-        return new JSONObject();
+        return executeRequest(getListOfUsersPlaylistsRequest);
     }
 
     @Override
@@ -179,14 +157,7 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         final GetCurrentUsersProfileRequest getCurrentUsersProfileRequest = this.api.getCurrentUsersProfile()
                 .build();
 
-        try {
-            // Make the request
-            return new JSONObject(getCurrentUsersProfileRequest.execute());
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        // Return null after catch (if there is an error)
-        return new JSONObject();
+        return executeRequest(getCurrentUsersProfileRequest);
     }
 
     @Override
@@ -195,13 +166,27 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor{
         final GetUsersProfileRequest getUsersProfileRequest = this.api.getUsersProfile(userId)
                 .build();
 
+        return executeRequest(getUsersProfileRequest);
+    }
+
+    @NotNull
+    private static JSONObject executeGetArtistRequest(String artistId, GetArtistRequest getArtistRequest) {
+        JSONObject response = new JSONObject();
         try {
-            // Make the request
-            return new JSONObject(getUsersProfileRequest.execute());
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
+            response = new JSONObject(getArtistRequest.execute());
         }
-        // Return null after catch (if there is an error)
-        return new JSONObject();
+        catch (IOException exc) {
+            System.err.printf("IO Error while fetching artist with ID: %s - %s%n", artistId, exc.getMessage());
+        }
+        catch (SpotifyWebApiException exc) {
+            System.err.printf("Spotify API Error while fetching artist with ID: %s - %s%n", artistId, exc.getMessage());
+            if (exc.getMessage().contains("rate limit")) {
+                System.err.println("Rate limit exceeded. Consider retrying after some time.");
+            }
+        }
+        catch (ParseException exc) {
+            System.err.printf("Parsing error while processing artist with ID: %s - %s%n", artistId, exc.getMessage());
+        }
+        return response;
     }
 }

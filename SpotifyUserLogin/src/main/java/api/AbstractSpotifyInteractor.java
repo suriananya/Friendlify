@@ -1,34 +1,40 @@
 package api;
 
+import java.io.IOException;
+import java.net.URI;
+
+import org.apache.hc.core5.http.ParseException;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
-import se.michaelthelin.spotify.requests.AbstractRequest;
-
-import java.net.URI;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.requests.data.AbstractDataRequest;
 
 /**
  * A class to dictate and document the methods required for the SpotifyInteractor.
  * Ideally, this class will help increase readability.
  */
 public abstract class AbstractSpotifyInteractor {
+    public static final String APPLICATION_SCOPE =
+            "user-follow-read user-read-private playlist-read-private playlist-read-collaborative";
+
     // Technically I should not be sharing any of this information, but I cannot be bothered to hide it right now
-    private static final String clientID = "53ee2a266cd542acaf19190e2ec3da41";
-    private static final String clientSecret = "0567ae1ac8e1415ba72f748808a69377";
-    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:3000");
+    private static final String CLIENT_ID = "53ee2a266cd542acaf19190e2ec3da41";
+    private static final String CLIENT_SECRET = "0567ae1ac8e1415ba72f748808a69377";
+    private static final URI REDIRECT_URI = SpotifyHttpManager.makeUri("http://localhost:3000");
 
     // Initialize important variables for app functionality
-    public static final String applicationScope =
-            "user-follow-read user-read-private playlist-read-private playlist-read-collaborative";
-    String code;
-    String accessToken;
-    String refreshToken;
+    private String code;
+    private String accessToken;
+    private String refreshToken;
 
     // Initialize the API wrapper class
     final SpotifyApi api = new SpotifyApi.Builder()
-            .setClientId(clientID)
-            .setClientSecret(clientSecret)
-            .setRedirectUri(redirectUri)
+            .setClientId(CLIENT_ID)
+            .setClientSecret(CLIENT_SECRET)
+            .setRedirectUri(REDIRECT_URI)
             .setAccessToken(this.getAccessToken())
             .setRefreshToken(this.getRefreshToken())
             .build();
@@ -58,15 +64,23 @@ public abstract class AbstractSpotifyInteractor {
     /**
      * Completes the login scheme by combining a series of methods to log in the user.
      * This method will provide instructions to help log in through the command line.
-     * Furthermore, there are instructions located below, in this JavaDoc.<p>
-     *  Login instructions<p>
-     *  1. When you run this file, it will send you a link to authenticate your account.<p>
-     *  2. Click on this link to authenticate your account.<p>
-     *  3. Afterward, it will send you to a blank page, where you will receive a connection error.<p>
-     *  4. Copy the link of the page you were sent to.<p>
-     *  5. Paste it into the command line, and press enter.<p>
-     *  6. From there, the code will generate for you an access and refresh token.<p>
-     *  7. If you receive no errors. This means that you've logged in.
+     * Furthermore, there are instructions located below, in this JavaDoc.
+     *
+     * <p>Login instructions
+     *
+     * <p>1. When you run this file, it will send you a link to authenticate your account.
+     *
+     * <p>2. Click on this link to authenticate your account.
+     *
+     * <p>3. Afterward, it will send you to a blank page, where you will receive a connection error.
+     *
+     * <p>4. Copy the link of the page you were sent to.
+     *
+     * <p>5. Paste it into the command line, and press enter.
+     *
+     * <p>6. From there, the code will generate for you an access and refresh token.
+     *
+     * <p>7. If you receive no errors. This means that you've logged in.
      */
     abstract void login();
 
@@ -132,6 +146,31 @@ public abstract class AbstractSpotifyInteractor {
      */
     public abstract JSONObject getUserProfile(String userId);
 
+    /**
+     * Executes an arbitrary data request.
+     * @param req the arbitrary data request to be executed.
+     * @return the request response.
+     */
+    @NotNull
+    static JSONObject executeRequest(AbstractDataRequest req) {
+        JSONObject response = new JSONObject();
+        try {
+            response = new JSONObject(req.execute());
+        }
+        catch (IOException | SpotifyWebApiException | ParseException exc) {
+            defaultExceptionMessage(exc);
+        }
+        return response;
+    }
+
+    /**
+     * Prints an often used default exception message.
+     * @param exc the exception received.
+     */
+    static void defaultExceptionMessage(Exception exc) {
+        System.out.printf("Error: %s%n", exc.getMessage());
+    }
+
     // *** Beyond this point, there should only be default getter and setter methods ***
 
     public String getCode() {
@@ -150,11 +189,19 @@ public abstract class AbstractSpotifyInteractor {
         this.code = code;
     }
 
+    /**
+     * Changes the access token locally saved in the interactor, and the connected API wrapper.
+     * @param accessToken the new access token.
+     */
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
         api.setAccessToken(accessToken);
     }
 
+    /**
+     * Changes the refresh token locally saved in the interactor, and the connected API wrapper.
+     * @param refreshToken the new refresh token.
+     */
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
         api.setRefreshToken(refreshToken);
