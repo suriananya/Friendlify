@@ -17,6 +17,8 @@ import view.Friends.FriendsView;
 
 import view.Designs.RoundedButton;
 
+import useCase.Roulette.SurpriseMeInteractor;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
@@ -34,9 +36,10 @@ import java.util.UUID;
 
 public class Main {
     private static final String DATA_FILE = System.getProperty("user.home") + "/user_data.txt";
+    private static SpotifyInteractor interactor;
 
     public static void main(String[] args) {
-        SpotifyInteractor interactor = new SpotifyInteractor();
+        interactor = new SpotifyInteractor();
 
         JFrame frame = new JFrame("Spotify Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,10 +54,6 @@ public class Main {
         UserProfile userProfile = loadOrCreateUserProfile(interactor);
         Map<String, Song> friendsSongs = fetchFriendsSongs();
 
-//        List<FriendProfile> friendProfileList = new ArrayList<>();
-//        for (String friendId : userProfile.getFriendsListIds()) {
-//            friendProfileList.add(new FriendProfile(interactor, friendId));
-//        }
         FriendsListUseCase friendsListUseCase = new FriendsListUseCase(interactor, userProfile);
 
         EditPreferencesUseCase useCase = new EditPreferencesUseCase(interactor, userProfile);
@@ -85,6 +84,9 @@ public class Main {
         RoundedButton rateSongsButton = new RoundedButton("Rate Friends' Songs");
         RoundedButton friendsButton = new RoundedButton("Friends List");
 
+        RoundedButton surpriseMeButton = new RoundedButton("Surprise Me");
+        surpriseMeButton.setPreferredSize(new Dimension(200, 50));
+
         profileButton.setPreferredSize(new Dimension(200, 50));
         rateSongsButton.setPreferredSize(new Dimension(200, 50));
         friendsButton.setPreferredSize(new Dimension(200, 50));
@@ -94,6 +96,8 @@ public class Main {
         mainMenuView.add(profileButton);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(rateSongsButton);
+        mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        mainMenuView.add(surpriseMeButton);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(friendsButton);
 
@@ -150,6 +154,16 @@ public class Main {
         profileView.add(updateArtist);
         profileView.add(artistField);
         profileView.add(saveButton);
+
+        surpriseMeButton.addActionListener(e -> {
+            try {
+                SurpriseMeInteractor surpriseMeInteractor = new SurpriseMeInteractor(interactor, userProfile); // Pass userProfile
+                Song randomSong = surpriseMeInteractor.getRandomSongFromFriends();
+                JOptionPane.showMessageDialog(frame, "Playing: " + randomSong.getTitle() + " by " + randomSong.getArtist(), "Surprise Me!", JOptionPane.INFORMATION_MESSAGE);
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         editButton.addActionListener(e -> {
             genreField.setText(String.join(", ", userProfile.getPreferredGenres()));
@@ -215,7 +229,6 @@ public class Main {
         rateSongsView.add(Box.createRigidArea(new Dimension(0, 40))); // Spacing
         rateSongsView.add(rateSongsLabel);
 
-        RoundedButton surpriseMeButton = new RoundedButton("Surprise Me");
         surpriseMeButton.setPreferredSize(new Dimension(200, 50));
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(surpriseMeButton);
