@@ -1,14 +1,16 @@
 package view.Friends;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import entities.users.UserProfile;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FriendsView extends JPanel {
     private final JButton backButton = new JButton("Back");
+    private List<JButton> profileButtonList = new ArrayList<>();
     private final JPanel friendsPanel;
 
     /**
@@ -45,10 +47,13 @@ public class FriendsView extends JPanel {
 
     /**
      * Display friends list
-     * @param friendsList a list of the current user's friends
+     * @param currentUser the current user
      */
-    public void displayFriends(JSONArray friendsList) {
+    public void displayFriends(UserProfile currentUser) {
         friendsPanel.removeAll();
+
+        List<String> friendsList = currentUser.getFriendsListNames();
+        System.out.println(friendsList);
 
         if (!friendsList.isEmpty()) {
             handleFriendDisplay(friendsList);
@@ -64,32 +69,42 @@ public class FriendsView extends JPanel {
         friendsPanel.add(emptyListLabel);
     }
 
-    private void handleFriendDisplay(JSONArray friendsList) {
-        for (int i = 0; i < friendsList.length(); i++) {
-            JSONObject friend = friendsList.getJSONObject(i);
+    private void handleFriendDisplay(List<String> friendsList) {
+        for (String friend : friendsList) {
+            JPanel friendItem = individualFriendDisplayHelper(friend);
 
-            JPanel friendItem = individualFriendDisplayHelper();
-
-            JLabel friendLabel = individualFriendLabelHelper(friend);
-            friendItem.add(friendLabel, BorderLayout.CENTER);
+//            JLabel friendLabel = individualFriendLabelHelper(friend);
+//            friendItem.add(friendLabel, BorderLayout.CENTER);
 
             friendsPanel.add(friendItem);
             friendsPanel.add(Box.createVerticalStrut(10)); // Spacing between items
         }
     }
 
-    private JPanel individualFriendDisplayHelper() {
+    private JPanel individualFriendDisplayHelper(String friendName) {
         JPanel friendItem = new JPanel();
+        JButton profileButton = new JButton(friendName);
+        profileButtonList.add(profileButton);
+
         friendItem.setLayout(new BorderLayout());
         friendItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         friendItem.setBackground(Color.WHITE);
+
+        friendItem.add(profileButton, BorderLayout.NORTH);
+
         return friendItem;
     }
 
-    private JLabel individualFriendLabelHelper(JSONObject friend) {
-        JLabel friendLabel = new JLabel(friend.getString("display_name"));
+    private JLabel individualFriendLabelHelper(String friendName) {
+        JLabel friendLabel = new JLabel(friendName);
         friendLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         return friendLabel;
+    }
+
+    public void addProfileButtonListeners(List<ActionListener> actionListeners) {
+        for (int i = 0; i < profileButtonList.size(); i++) {
+            profileButtonList.get(i).addActionListener(actionListeners.get(i));
+        }
     }
 
     public void addBackButtonListener(ActionListener listener) {

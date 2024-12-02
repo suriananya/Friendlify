@@ -2,12 +2,16 @@ package main;
 
 import api.SpotifyInteractor;
 import entities.Song;
+import entities.users.FriendProfile;
 import entities.users.UserProfile;
 import interfaceAdapters.editpreferences.EditPreferencesController;
 import interfaceAdapters.editpreferences.EditPreferencesPresenter;
 import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
 import useCase.Editing.EditPreferencesUseCase;
+import view.Friends.FriendProfileView;
+import view.Friends.FriendsView;
+
 import view.Designs.RoundedButton;
 
 import javax.swing.JButton;
@@ -19,6 +23,7 @@ import java.awt.Dimension;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -28,7 +33,6 @@ public class Main {
     private static final String DATA_FILE = System.getProperty("user.home") + "/user_data.txt";
 
     public static void main(String[] args) {
-        UserProfile userProfile = loadOrCreateUserProfile();
         SpotifyInteractor interactor = new SpotifyInteractor();
 
         JFrame frame = new JFrame("Spotify Application");
@@ -41,13 +45,19 @@ public class Main {
             System.exit(1);
         }
 
+        UserProfile userProfile = loadOrCreateUserProfile(interactor);
         Map<String, Song> friendsSongs = fetchFriendsSongs();
+
+        List<FriendProfile> friendProfileList = new ArrayList<>();
+        for (String friendId : userProfile.getFriendsListIds()) {
+            friendProfileList.add(new FriendProfile(interactor, friendId));
+        }
 
         EditPreferencesUseCase useCase = new EditPreferencesUseCase(interactor, userProfile);
         EditPreferencesPresenter presenter = new EditPreferencesPresenter();
         EditPreferencesController controller = new EditPreferencesController(useCase, presenter);
 
-        setupUI(frame, userProfile, friendsSongs, controller);
+        setupUI(frame, userProfile, friendProfileList, friendsSongs, controller);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -55,7 +65,7 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> saveUserProfile(userProfile)));
     }
 
-    private static void setupUI(JFrame frame, UserProfile userProfile, Map<String, Song> friendsSongs, EditPreferencesController controller) {
+    private static void setupUI(JFrame frame, UserProfile userProfile, List<FriendProfile> friendProfileList, Map<String, Song> friendsSongs, EditPreferencesController controller) {
         // Main Menu Panel
         RoundedPanel mainMenuView = new RoundedPanel(20);
         mainMenuView.setLayout(new BoxLayout(mainMenuView, BoxLayout.Y_AXIS));
@@ -69,15 +79,19 @@ public class Main {
 
         RoundedButton profileButton = new RoundedButton("View Profile");
         RoundedButton rateSongsButton = new RoundedButton("Rate Friends' Songs");
+        RoundedButton friendsButton = new RoundedButton("Friends List");
 
         profileButton.setPreferredSize(new Dimension(200, 50));
         rateSongsButton.setPreferredSize(new Dimension(200, 50));
+        friendsButton.setPreferredSize(new Dimension(200, 50));
 
         mainMenuView.add(menuLabel);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 40))); // Spacing
         mainMenuView.add(profileButton);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(rateSongsButton);
+        mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        mainMenuView.add(friendsButton);
 
         // Profile Panel
         RoundedPanel profileView = new RoundedPanel(20);
@@ -232,17 +246,46 @@ public class Main {
             rateSongsView.add(rateButton);
         });
 
+        FriendsView friendsView = new FriendsView();
+        friendsView.displayFriends(userProfile);
+
+        List<FriendProfileView> friendProfileViewList = new ArrayList<>();
+        for (FriendProfile friendProfile : friendProfileList) {
+            FriendProfileView newFriendProfileView = new FriendProfileView();
+            newFriendProfileView.displayFriendProfile(friendProfile);
+            friendProfileViewList.add(newFriendProfileView);
+        }
+
         // Add panels to frame
         frame.getContentPane().add(mainMenuView, "MainMenu");
         frame.getContentPane().add(profileView, "Profile");
         frame.getContentPane().add(rateSongsView, "RateSongs");
+        frame.getContentPane().add(friendsView, "Friends");
+
+        for (int i = 0; i < friendProfileViewList.size(); i++) {
+            String tempName = "Friend Profile %d".formatted(i);
+            frame.getContentPane().add(friendProfileViewList.get(i), tempName);
+        }
 
         // Navigation
         CardLayout cardLayout = (CardLayout) frame.getContentPane().getLayout();
         profileButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "Profile"));
         rateSongsButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "RateSongs"));
+        friendsButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "Friends"));
         backButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
         backToMenuButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
+        friendsView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
+
+        List<ActionListener> friendProfileActionListeners = new ArrayList<>();
+        for (int i = 0; i < friendProfileViewList.size(); i++) {
+            String tempName = "Friend Profile %d".formatted(i);
+            friendProfileActionListeners.add(e -> cardLayout.show(frame.getContentPane(), tempName));
+        }
+        friendsView.addProfileButtonListeners(friendProfileActionListeners);
+
+        for (FriendProfileView friendProfileView : friendProfileViewList) {
+            friendProfileView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "Friends"));
+        }
     }
 
     private static void styleButton(RoundedButton profileButton) {
@@ -268,7 +311,7 @@ public class Main {
         return UUID.randomUUID().toString();
     }
 
-    private static UserProfile loadOrCreateUserProfile() {
+    private static UserProfile loadOrCreateUserProfile(SpotifyInteractor interactor) {
         File file = new File(DATA_FILE);
 
         if (file.exists()) {
@@ -282,8 +325,7 @@ public class Main {
             }
         }
 
-        String userId = UUID.randomUUID().toString();
-        return new UserProfile(userId, Arrays.asList("Pop", "Rock"), Arrays.asList("Artist1", "Artist2"));
+        return new UserProfile(interactor);
     }
 
     private static void saveUserProfile(UserProfile userProfile) {
