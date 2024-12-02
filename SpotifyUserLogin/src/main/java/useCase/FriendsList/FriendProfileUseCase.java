@@ -4,8 +4,11 @@ import entities.users.FriendProfile;
 
 import java.util.List;
 
+/**
+ * Use case interactor for the friend profile.
+ */
 public class FriendProfileUseCase {
-    final FriendProfile friendProfile;
+    private final FriendProfile friendProfile;
 
     public FriendProfileUseCase(FriendProfile friendProfile) {
         this.friendProfile = friendProfile;

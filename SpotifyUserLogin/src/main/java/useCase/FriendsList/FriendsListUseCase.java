@@ -7,14 +7,14 @@ import entities.users.UserProfile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use case interactor for the friends list.
+ */
 public class FriendsListUseCase {
-    final SpotifyInteractor interactor;
-
-    final UserProfile userProfile;
-    final List<FriendProfile> friendProfileList = new ArrayList<>();
+    private final UserProfile userProfile;
+    private final List<FriendProfile> friendProfileList = new ArrayList<>();
 
     public FriendsListUseCase(SpotifyInteractor interactor, UserProfile userProfile) {
-        this.interactor = interactor;
         this.userProfile = userProfile;
 
         for (String friendId : userProfile.getFriendsListIds()) {
