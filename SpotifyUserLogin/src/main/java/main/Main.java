@@ -96,9 +96,9 @@ public class Main {
         mainMenuView.add(profileButton);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(rateSongsButton);
-        mainMenuView.add(surpriseMeButton);
         mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         mainMenuView.add(friendsButton);
+        mainMenuView.add(surpriseMeButton);
 
         // Profile Panel
         RoundedPanel profileView = new RoundedPanel(20);
