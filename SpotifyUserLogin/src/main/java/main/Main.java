@@ -7,8 +7,9 @@ import interfaceAdapters.editpreferences.EditPreferencesController;
 import interfaceAdapters.editpreferences.EditPreferencesPresenter;
 import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
-import interfaceAdapters.rating.RateSongPresenter;
 import useCase.Editing.EditPreferencesUseCase;
+import view.Designs.RoundedButton;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
@@ -195,6 +196,11 @@ public class Main {
         rateSongsView.add(backToMenuButton);
         rateSongsView.add(Box.createRigidArea(new Dimension(0, 40))); // Spacing
         rateSongsView.add(rateSongsLabel);
+
+        RoundedButton surpriseMeButton = new RoundedButton("Surprise Me");
+        surpriseMeButton.setPreferredSize(new Dimension(200, 50));
+        mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        mainMenuView.add(surpriseMeButton);
 
         friendsSongs.forEach((songId, song) -> {
             JLabel songLabel = new JLabel("Song: " + song.getTitle() + " by " + song.getArtist());
