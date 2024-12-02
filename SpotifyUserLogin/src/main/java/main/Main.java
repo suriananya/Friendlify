@@ -8,10 +8,11 @@ import interfaceAdapters.editpreferences.EditPreferencesController;
 import interfaceAdapters.editpreferences.EditPreferencesPresenter;
 import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
-import interfaceAdapters.rating.RateSongPresenter;
 import useCase.Editing.EditPreferencesUseCase;
 import view.Friends.FriendProfileView;
 import view.Friends.FriendsView;
+
+import view.Designs.RoundedButton;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -210,6 +211,11 @@ public class Main {
         rateSongsView.add(Box.createRigidArea(new Dimension(0, 40))); // Spacing
         rateSongsView.add(rateSongsLabel);
 
+        RoundedButton surpriseMeButton = new RoundedButton("Surprise Me");
+        surpriseMeButton.setPreferredSize(new Dimension(200, 50));
+        mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        mainMenuView.add(surpriseMeButton);
+
         friendsSongs.forEach((songId, song) -> {
             JLabel songLabel = new JLabel("Song: " + song.getTitle() + " by " + song.getArtist());
             songLabel.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -282,8 +288,6 @@ public class Main {
         }
     }
 
-
-
     private static void styleButton(RoundedButton profileButton) {
         profileButton.setFont(new Font("Arial", Font.BOLD, 14));
         profileButton.setFocusPainted(false);
@@ -293,7 +297,6 @@ public class Main {
         profileButton.setOpaque(true);
         profileButton.setContentAreaFilled(true); // Ensures no default button styling
     }
-
 
     private static void styleTextField(JTextField textField) {
         textField.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -311,16 +314,16 @@ public class Main {
     private static UserProfile loadOrCreateUserProfile(SpotifyInteractor interactor) {
         File file = new File(DATA_FILE);
 
-//        if (file.exists()) {
-//            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//                String userId = reader.readLine();
-//                List<String> genres = Arrays.asList(reader.readLine().split(","));
-//                List<String> artists = Arrays.asList(reader.readLine().split(","));
-//                return new UserProfile(userId, genres, artists);
-//            } catch (IOException e) {
-//                System.err.println("Error reading user data file: " + e.getMessage());
-//            }
-//        }
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String userId = reader.readLine();
+                List<String> genres = Arrays.asList(reader.readLine().split(","));
+                List<String> artists = Arrays.asList(reader.readLine().split(","));
+                return new UserProfile(userId, genres, artists);
+            } catch (IOException e) {
+                System.err.println("Error reading user data file: " + e.getMessage());
+            }
+        }
 
         return new UserProfile(interactor);
     }
@@ -341,10 +344,6 @@ public class Main {
         songs.put("song2", new Song("Song 2", "Artist 2", Arrays.asList("Rock", "Alternative")));
         return songs;
     }
-
-
-
-
 
     private static boolean authenticate(SpotifyInteractor interactor, JFrame frame) {
                 // Redirect the standard output to capture the printed URI
