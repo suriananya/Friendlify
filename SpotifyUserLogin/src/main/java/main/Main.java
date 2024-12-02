@@ -196,6 +196,11 @@ public class Main {
         rateSongsView.add(Box.createRigidArea(new Dimension(0, 40))); // Spacing
         rateSongsView.add(rateSongsLabel);
 
+        RoundedButton surpriseMeButton = new RoundedButton("Surprise Me");
+        surpriseMeButton.setPreferredSize(new Dimension(200, 50));
+        mainMenuView.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        mainMenuView.add(surpriseMeButton);
+
         friendsSongs.forEach((songId, song) -> {
             JLabel songLabel = new JLabel("Song: " + song.getTitle() + " by " + song.getArtist());
             songLabel.setFont(new Font("Arial", Font.PLAIN, 18));
