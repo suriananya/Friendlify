@@ -1,6 +1,7 @@
 package view.Friends;
 
 import entities.users.UserProfile;
+import useCase.FriendsList.FriendsListUseCase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class FriendsView extends JPanel {
     private final JButton backButton = new JButton("Back");
-    private List<JButton> profileButtonList = new ArrayList<>();
+    private final List<JButton> profileButtonList = new ArrayList<>();
     private final JPanel friendsPanel;
 
     /**
@@ -49,11 +50,10 @@ public class FriendsView extends JPanel {
      * Display friends list
      * @param currentUser the current user
      */
-    public void displayFriends(UserProfile currentUser) {
+    public void displayFriends(FriendsListUseCase currentUser) {
         friendsPanel.removeAll();
 
         List<String> friendsList = currentUser.getFriendsListNames();
-        System.out.println(friendsList);
 
         if (!friendsList.isEmpty()) {
             handleFriendDisplay(friendsList);
@@ -73,9 +73,6 @@ public class FriendsView extends JPanel {
         for (String friend : friendsList) {
             JPanel friendItem = individualFriendDisplayHelper(friend);
 
-//            JLabel friendLabel = individualFriendLabelHelper(friend);
-//            friendItem.add(friendLabel, BorderLayout.CENTER);
-
             friendsPanel.add(friendItem);
             friendsPanel.add(Box.createVerticalStrut(10)); // Spacing between items
         }
@@ -93,12 +90,6 @@ public class FriendsView extends JPanel {
         friendItem.add(profileButton, BorderLayout.NORTH);
 
         return friendItem;
-    }
-
-    private JLabel individualFriendLabelHelper(String friendName) {
-        JLabel friendLabel = new JLabel(friendName);
-        friendLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        return friendLabel;
     }
 
     public void addProfileButtonListeners(List<ActionListener> actionListeners) {
