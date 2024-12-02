@@ -9,13 +9,13 @@ import org.json.JSONObject;
 import java.util.Random;
 import java.util.List;
 
-
 public class SurpriseMeInteractor {
     private final SpotifyInteractor spotifyInteractor;
-    private UserProfile userProfile = null;
+    private final UserProfile userProfile; // Initialize this properly
 
-    public SurpriseMeInteractor(SpotifyInteractor spotifyInteractor) {
+    public SurpriseMeInteractor(SpotifyInteractor spotifyInteractor, UserProfile userProfile) {
         this.spotifyInteractor = spotifyInteractor;
+        this.userProfile = userProfile; // Assign the passed userProfile
     }
 
     public Song getRandomSongFromFriends() {
