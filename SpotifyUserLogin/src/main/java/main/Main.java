@@ -7,8 +7,9 @@ import interfaceAdapters.editpreferences.EditPreferencesController;
 import interfaceAdapters.editpreferences.EditPreferencesPresenter;
 import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
-import interfaceAdapters.rating.RateSongPresenter;
 import useCase.Editing.EditPreferencesUseCase;
+import view.Designs.RoundedButton;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
