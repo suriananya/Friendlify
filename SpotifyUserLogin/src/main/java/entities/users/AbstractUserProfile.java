@@ -62,6 +62,32 @@ public abstract class AbstractUserProfile {
     }
 
     /**
+     * If we are not initializing the current user, then we must initialize their userID before making calls to the API
+     * @param interactor the SpotifyInteractor associated with this session.
+     * @param userID the userID for the profile.
+     */
+    public AbstractUserProfile(SpotifyInteractor interactor, String userID) {
+        this.interactor = interactor;
+        this.userID = userID;
+
+        Map<String, String> tempUserInfo = new HashMap<>();
+
+        try {
+            tempUserInfo = initUserInfo();
+            initMusicPreference();
+
+        } catch (Exception e) {
+            System.err.printf("Error fetching user profile data: %s%n", e.getMessage());
+
+            tempUserInfo.put("username", "Unknown");
+            this.preferredGenres = new ArrayList<>(Collections.singletonList("Unknown"));
+            this.preferredArtists = new ArrayList<>(Collections.singletonList("Unknown"));
+        }
+
+        this.username = tempUserInfo.get("username");
+    }
+
+    /**
      * Initializes the user's preferred artists and genres.
      */
     void initMusicPreference() {
@@ -88,8 +114,12 @@ public abstract class AbstractUserProfile {
                         JSONArray trackArtists = track.getJSONArray("artists");
 
                         for (int k = 0; k < trackArtists.length(); k++) {
-                            String artistId = trackArtists.getJSONObject(k).getString("id");
-                            String artistName = trackArtists.getJSONObject(k).getString("name");
+                            JSONObject trackArtist = trackArtists.getJSONObject(k);
+                            if (!trackArtist.has("id")) {
+                                continue;
+                            }
+                            String artistId = trackArtist.getString("id");
+                            String artistName = trackArtist.getString("name");
                             artistCounts.put(artistName, artistCounts.getOrDefault(artistName, 0) + 1);
 
                             // Fetch artist genres

@@ -13,7 +13,7 @@ public class FriendProfile extends AbstractUserProfile{
     }
 
     public FriendProfile(SpotifyInteractor interactor, String id) {
-        super(interactor);
+        super(interactor, id);
     }
 
     @Override
@@ -23,11 +23,10 @@ public class FriendProfile extends AbstractUserProfile{
         // Fetch user profile
         JSONObject userProfileJson = this.getUserProfileJSON();
         System.out.printf("User Profile Response: %s%n", userProfileJson); // Debugging line
-        fetchedUsername = userProfileJson.optString("display_name",
-                userProfileJson.optString("id", "Unknown User"));
+        fetchedUsername = userProfileJson.optString("displayName", userProfileJson.optString("id", "Unknown User"));
 
         Map<String, String> temp = new HashMap<>();
-        temp.put("display_name", fetchedUsername);
+        temp.put("username", fetchedUsername);
         return temp;
     }
 
