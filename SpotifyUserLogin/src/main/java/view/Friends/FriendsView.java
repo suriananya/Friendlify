@@ -5,10 +5,12 @@ import entities.users.UserProfile;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsView extends JPanel {
     private final JButton backButton = new JButton("Back");
+    private List<JButton> profileButtonList = new ArrayList<>();
     private final JPanel friendsPanel;
 
     /**
@@ -82,6 +84,7 @@ public class FriendsView extends JPanel {
     private JPanel individualFriendDisplayHelper(String friendName) {
         JPanel friendItem = new JPanel();
         JButton profileButton = new JButton(friendName);
+        profileButtonList.add(profileButton);
 
         friendItem.setLayout(new BorderLayout());
         friendItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
@@ -96,6 +99,12 @@ public class FriendsView extends JPanel {
         JLabel friendLabel = new JLabel(friendName);
         friendLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         return friendLabel;
+    }
+
+    public void addProfileButtonListeners(List<ActionListener> actionListeners) {
+        for (int i = 0; i < profileButtonList.size(); i++) {
+            profileButtonList.get(i).addActionListener(actionListeners.get(i));
+        }
     }
 
     public void addBackButtonListener(ActionListener listener) {

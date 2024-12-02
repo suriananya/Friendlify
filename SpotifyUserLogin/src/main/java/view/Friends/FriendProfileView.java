@@ -4,6 +4,7 @@ import entities.users.FriendProfile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class FriendProfileView extends JPanel {
@@ -57,5 +58,9 @@ public class FriendProfileView extends JPanel {
         newTextArea.setBorder(BorderFactory.createTitledBorder(areaType));
         newTextArea.setText(String.join("\n", content));
         profilePanel.add(newTextArea);
+    }
+
+    public void addBackButtonListener(ActionListener listener) {
+        backButton.addActionListener(listener);
     }
 }

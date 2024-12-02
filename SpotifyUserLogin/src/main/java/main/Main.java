@@ -2,6 +2,7 @@ package main;
 
 import api.SpotifyInteractor;
 import entities.Song;
+import entities.users.FriendProfile;
 import entities.users.UserProfile;
 import interfaceAdapters.editpreferences.EditPreferencesController;
 import interfaceAdapters.editpreferences.EditPreferencesPresenter;
@@ -9,6 +10,7 @@ import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
 import interfaceAdapters.rating.RateSongPresenter;
 import useCase.Editing.EditPreferencesUseCase;
+import view.Friends.FriendProfileView;
 import view.Friends.FriendsView;
 
 import javax.swing.JButton;
@@ -20,6 +22,7 @@ import java.awt.Dimension;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -44,11 +47,16 @@ public class Main {
         UserProfile userProfile = loadOrCreateUserProfile(interactor);
         Map<String, Song> friendsSongs = fetchFriendsSongs();
 
+        List<FriendProfile> friendProfileList = new ArrayList<>();
+        for (String friendId : userProfile.getFriendsListIds()) {
+            friendProfileList.add(new FriendProfile(interactor, friendId));
+        }
+
         EditPreferencesUseCase useCase = new EditPreferencesUseCase(interactor, userProfile);
         EditPreferencesPresenter presenter = new EditPreferencesPresenter();
         EditPreferencesController controller = new EditPreferencesController(useCase, presenter);
 
-        setupUI(frame, userProfile, friendsSongs, controller);
+        setupUI(frame, userProfile, friendProfileList, friendsSongs, controller);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -56,7 +64,7 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> saveUserProfile(userProfile)));
     }
 
-    private static void setupUI(JFrame frame, UserProfile userProfile, Map<String, Song> friendsSongs, EditPreferencesController controller) {
+    private static void setupUI(JFrame frame, UserProfile userProfile, List<FriendProfile> friendProfileList, Map<String, Song> friendsSongs, EditPreferencesController controller) {
         // Main Menu Panel
         RoundedPanel mainMenuView = new RoundedPanel(20);
         mainMenuView.setLayout(new BoxLayout(mainMenuView, BoxLayout.Y_AXIS));
@@ -235,11 +243,23 @@ public class Main {
         FriendsView friendsView = new FriendsView();
         friendsView.displayFriends(userProfile);
 
+        List<FriendProfileView> friendProfileViewList = new ArrayList<>();
+        for (FriendProfile friendProfile : friendProfileList) {
+            FriendProfileView newFriendProfileView = new FriendProfileView();
+            newFriendProfileView.displayFriendProfile(friendProfile);
+            friendProfileViewList.add(newFriendProfileView);
+        }
+
         // Add panels to frame
         frame.getContentPane().add(mainMenuView, "MainMenu");
         frame.getContentPane().add(profileView, "Profile");
         frame.getContentPane().add(rateSongsView, "RateSongs");
         frame.getContentPane().add(friendsView, "Friends");
+
+        for (int i = 0; i < friendProfileViewList.size(); i++) {
+            String tempName = "Friend Profile %d".formatted(i);
+            frame.getContentPane().add(friendProfileViewList.get(i), tempName);
+        }
 
         // Navigation
         CardLayout cardLayout = (CardLayout) frame.getContentPane().getLayout();
@@ -249,6 +269,17 @@ public class Main {
         backButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
         backToMenuButton.addActionListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
         friendsView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "MainMenu"));
+
+        List<ActionListener> friendProfileActionListeners = new ArrayList<>();
+        for (int i = 0; i < friendProfileViewList.size(); i++) {
+            String tempName = "Friend Profile %d".formatted(i);
+            friendProfileActionListeners.add(e -> cardLayout.show(frame.getContentPane(), tempName));
+        }
+        friendsView.addProfileButtonListeners(friendProfileActionListeners);
+
+        for (FriendProfileView friendProfileView : friendProfileViewList) {
+            friendProfileView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "Friends"));
+        }
     }
 
 
