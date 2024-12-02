@@ -1,13 +1,10 @@
 package view.Friends;
 
 import entities.users.UserProfile;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsView extends JPanel {
@@ -72,21 +69,26 @@ public class FriendsView extends JPanel {
 
     private void handleFriendDisplay(List<String> friendsList) {
         for (String friend : friendsList) {
-            JPanel friendItem = individualFriendDisplayHelper();
+            JPanel friendItem = individualFriendDisplayHelper(friend);
 
-            JLabel friendLabel = individualFriendLabelHelper(friend);
-            friendItem.add(friendLabel, BorderLayout.CENTER);
+//            JLabel friendLabel = individualFriendLabelHelper(friend);
+//            friendItem.add(friendLabel, BorderLayout.CENTER);
 
             friendsPanel.add(friendItem);
             friendsPanel.add(Box.createVerticalStrut(10)); // Spacing between items
         }
     }
 
-    private JPanel individualFriendDisplayHelper() {
+    private JPanel individualFriendDisplayHelper(String friendName) {
         JPanel friendItem = new JPanel();
+        JButton profileButton = new JButton(friendName);
+
         friendItem.setLayout(new BorderLayout());
         friendItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         friendItem.setBackground(Color.WHITE);
+
+        friendItem.add(profileButton, BorderLayout.NORTH);
+
         return friendItem;
     }
 
