@@ -328,16 +328,16 @@ public class Main {
     private static UserProfile loadOrCreateUserProfile(SpotifyInteractor interactor) {
         File file = new File(DATA_FILE);
 
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String userId = reader.readLine();
-                List<String> genres = Arrays.asList(reader.readLine().split(","));
-                List<String> artists = Arrays.asList(reader.readLine().split(","));
-                return new UserProfile(userId, genres, artists);
-            } catch (IOException e) {
-                System.err.println("Error reading user data file: " + e.getMessage());
-            }
-        }
+//        if (file.exists()) {
+//            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+//                String userId = reader.readLine();
+//                List<String> genres = Arrays.asList(reader.readLine().split(","));
+//                List<String> artists = Arrays.asList(reader.readLine().split(","));
+//                return new UserProfile(userId, genres, artists);
+//            } catch (IOException e) {
+//                System.err.println("Error reading user data file: " + e.getMessage());
+//            }
+//        }
 
         return new UserProfile(interactor);
     }
