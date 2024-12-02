@@ -15,15 +15,15 @@ public class FriendProfileUseCase {
         return friendProfile;
     }
 
-    public String getUserName() {
-        return friendProfile.getUsername();
-    }
-
     public List<String> getPreferredGenres() {
         return friendProfile.getPreferredGenres();
     }
 
     public List<String> getPreferredArtists() {
         return friendProfile.getPreferredArtists();
+    }
+
+    public String getUsername() {
+        return friendProfile.getUsername();
     }
 }

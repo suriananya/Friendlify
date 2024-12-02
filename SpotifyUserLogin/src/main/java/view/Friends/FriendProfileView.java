@@ -1,6 +1,8 @@
 package view.Friends;
 
 import entities.users.FriendProfile;
+import useCase.FriendsList.FriendProfileUseCase;
+import useCase.FriendsList.FriendsListUseCase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,7 +40,7 @@ public class FriendProfileView extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    public void displayFriendProfile(FriendProfile friendProfile) {
+    public void displayFriendProfile(FriendProfileUseCase friendProfile) {
         profilePanel.removeAll();
         addUsernameLabel(friendProfile.getUsername());
         addPreferences("Preferred Genres", friendProfile.getPreferredGenres());

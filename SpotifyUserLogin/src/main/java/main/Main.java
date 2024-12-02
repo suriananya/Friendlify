@@ -8,7 +8,10 @@ import interfaceAdapters.editpreferences.EditPreferencesController;
 import interfaceAdapters.editpreferences.EditPreferencesPresenter;
 import interfaceAdapters.editpreferences.EditPreferencesState;
 import interfaceAdapters.rating.RateSongController;
+import org.jetbrains.annotations.NotNull;
 import useCase.Editing.EditPreferencesUseCase;
+import useCase.FriendsList.FriendProfileUseCase;
+import useCase.FriendsList.FriendsListUseCase;
 import view.Friends.FriendProfileView;
 import view.Friends.FriendsView;
 
@@ -48,16 +51,17 @@ public class Main {
         UserProfile userProfile = loadOrCreateUserProfile(interactor);
         Map<String, Song> friendsSongs = fetchFriendsSongs();
 
-        List<FriendProfile> friendProfileList = new ArrayList<>();
-        for (String friendId : userProfile.getFriendsListIds()) {
-            friendProfileList.add(new FriendProfile(interactor, friendId));
-        }
+//        List<FriendProfile> friendProfileList = new ArrayList<>();
+//        for (String friendId : userProfile.getFriendsListIds()) {
+//            friendProfileList.add(new FriendProfile(interactor, friendId));
+//        }
+        FriendsListUseCase friendsListUseCase = new FriendsListUseCase(interactor, userProfile);
 
         EditPreferencesUseCase useCase = new EditPreferencesUseCase(interactor, userProfile);
         EditPreferencesPresenter presenter = new EditPreferencesPresenter();
         EditPreferencesController controller = new EditPreferencesController(useCase, presenter);
 
-        setupUI(frame, userProfile, friendProfileList, friendsSongs, controller);
+        setupUI(frame, userProfile, friendsListUseCase, friendsSongs, controller);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -65,7 +69,7 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> saveUserProfile(userProfile)));
     }
 
-    private static void setupUI(JFrame frame, UserProfile userProfile, List<FriendProfile> friendProfileList, Map<String, Song> friendsSongs, EditPreferencesController controller) {
+    private static void setupUI(JFrame frame, UserProfile userProfile, FriendsListUseCase friendsListUseCase, Map<String, Song> friendsSongs, EditPreferencesController controller) {
         // Main Menu Panel
         RoundedPanel mainMenuView = new RoundedPanel(20);
         mainMenuView.setLayout(new BoxLayout(mainMenuView, BoxLayout.Y_AXIS));
@@ -217,7 +221,7 @@ public class Main {
         mainMenuView.add(surpriseMeButton);
 
         friendsSongs.forEach((songId, song) -> {
-            JLabel songLabel = new JLabel("Song: " + song.getTitle() + " by " + song.getArtist());
+            JLabel songLabel = new JLabel("Song: %s by %s".formatted(song.getTitle(), song.getArtist()));
             songLabel.setFont(new Font("Arial", Font.PLAIN, 18));
             songLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -247,14 +251,9 @@ public class Main {
         });
 
         FriendsView friendsView = new FriendsView();
-        friendsView.displayFriends(userProfile);
+        friendsView.displayFriends(friendsListUseCase);
 
-        List<FriendProfileView> friendProfileViewList = new ArrayList<>();
-        for (FriendProfile friendProfile : friendProfileList) {
-            FriendProfileView newFriendProfileView = new FriendProfileView();
-            newFriendProfileView.displayFriendProfile(friendProfile);
-            friendProfileViewList.add(newFriendProfileView);
-        }
+        List<FriendProfileView> friendProfileViewList = getFriendProfileViews(friendsListUseCase);
 
         // Add panels to frame
         frame.getContentPane().add(mainMenuView, "MainMenu");
@@ -286,6 +285,21 @@ public class Main {
         for (FriendProfileView friendProfileView : friendProfileViewList) {
             friendProfileView.addBackButtonListener(e -> cardLayout.show(frame.getContentPane(), "Friends"));
         }
+    }
+
+    @NotNull
+    private static List<FriendProfileView> getFriendProfileViews(FriendsListUseCase friendsListUseCase) {
+        List<FriendProfileView> friendProfileViewList = new ArrayList<>();
+        for (FriendProfile friendProfile : friendsListUseCase.getFriendProfileList()) {
+            // Define the views and use cases required to initialize the list of views
+            FriendProfileView newFriendProfileView = new FriendProfileView();
+            FriendProfileUseCase friendProfileUseCase = new FriendProfileUseCase(friendProfile);
+
+            // Load and display the data before adding the complete view to the list
+            newFriendProfileView.displayFriendProfile(friendProfileUseCase);
+            friendProfileViewList.add(newFriendProfileView);
+        }
+        return friendProfileViewList;
     }
 
     private static void styleButton(RoundedButton profileButton) {
