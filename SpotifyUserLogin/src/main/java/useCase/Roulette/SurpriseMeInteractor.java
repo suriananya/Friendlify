@@ -2,47 +2,60 @@ package useCase.Roulette;
 
 import api.SpotifyInteractor;
 import entities.Song;
+import entities.users.UserProfile;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Random;
+import java.util.List;
+
 
 public class SurpriseMeInteractor {
     private final SpotifyInteractor spotifyInteractor;
+    private UserProfile userProfile = null;
 
     public SurpriseMeInteractor(SpotifyInteractor spotifyInteractor) {
         this.spotifyInteractor = spotifyInteractor;
     }
 
-    public Song getRandomSongFromFriends(boolean usePreferences) {
-        // Retrieve playlists that are not owned by the user (friends' playlists)
-        JSONObject playlistsJson = spotifyInteractor.getNonOwnedPlaylists(20, 0);
+    public Song getRandomSongFromFriends() {
+        // Retrieve friend IDs
+        List<String> friendIds = userProfile.getFriendsList("id");
 
-        JSONArray playlists = playlistsJson.optJSONArray("items");
-
-        if (playlists == null || playlists.isEmpty()) {
-            throw new RuntimeException("No friend playlists available.");
-        }
-
-        // Pick a random playlist
+        // Randomly pick a friend and fetch their playlists
         Random random = new Random();
-        JSONObject randomPlaylist = playlists.getJSONObject(random.nextInt(playlists.length()));
+        for (String friendId : friendIds) {
+            try {
+                // Fetch playlists for the friend
+                JSONObject playlistsJson = spotifyInteractor.getUserPlaylists(friendId, 10, 0);
+                JSONArray playlists = playlistsJson.optJSONArray("items");
 
-        // Fetch items (songs) from the playlist
-        JSONObject playlistItemsJson = spotifyInteractor.getPlaylistItems(randomPlaylist.getString("id"), 50, 0);
-        JSONArray tracks = playlistItemsJson.optJSONArray("items");
+                if (playlists != null && playlists.length() > 0) {
+                    // Pick a random playlist
+                    JSONObject randomPlaylist = playlists.getJSONObject(random.nextInt(playlists.length()));
+                    String playlistId = randomPlaylist.getString("id");
 
-        if (tracks == null || tracks.isEmpty()) {
-            throw new RuntimeException("No tracks available in the selected playlist.");
+                    // Fetch tracks from the playlist
+                    JSONObject playlistItemsJson = spotifyInteractor.getPlaylistItems(playlistId, 50, 0);
+                    JSONArray tracks = playlistItemsJson.optJSONArray("items");
+
+                    if (tracks != null && tracks.length() > 0) {
+                        // Pick a random track
+                        JSONObject randomTrack = tracks.getJSONObject(random.nextInt(tracks.length())).getJSONObject("track");
+                        String title = randomTrack.getString("name");
+                        String artist = randomTrack.getJSONArray("artists").getJSONObject(0).getString("name");
+
+                        // Return the selected song
+                        return new Song(title, artist, null);
+                    }
+                }
+            } catch (Exception e) {
+                // Skip this friend if any error occurs (e.g., no playlists or tracks)
+                System.err.println("Error fetching data for friend " + friendId + ": " + e.getMessage());
+            }
         }
 
-        // Pick a random track from the playlist
-        JSONObject randomTrack = tracks.getJSONObject(random.nextInt(tracks.length())).getJSONObject("track");
-
-        String title = randomTrack.getString("name");
-        String artist = randomTrack.getJSONArray("artists").getJSONObject(0).getString("name");
-
-        return new Song(title, artist, null);
-        // NOTE: Genres are not being fetched, but can be added to later
+        // If no songs are found after iterating through all friends, throw an exception
+        throw new RuntimeException("No tracks found in friends' playlists.");
     }
 }
