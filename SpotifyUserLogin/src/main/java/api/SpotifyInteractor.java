@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import org.apache.hc.core5.http.ParseException;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
@@ -147,8 +148,31 @@ public class SpotifyInteractor extends AbstractSpotifyInteractor {
                 .limit(limit)
                 .offset(offset)
                 .build();
-
         return executeRequest(getListOfUsersPlaylistsRequest);
+
+    }
+
+    public JSONObject getNonOwnedPlaylists(int limit, int offset) {
+        JSONObject allPlaylists = getCurrentUserPlaylists(limit, offset);
+        JSONArray playlists = allPlaylists.optJSONArray("items");
+
+        JSONObject userProfile = getCurrentUserProfile();
+        String currentUserId = userProfile.optString("id", "");
+
+        JSONArray nonOwnedPlaylists = new JSONArray();
+        if (playlists != null) {
+            for (int i = 0; i < playlists.length(); i++) {
+                JSONObject playlist = playlists.getJSONObject(i);
+                String ownerId = playlist.getJSONObject("owner").optString("id", "");
+                if (!ownerId.equals(currentUserId)) {
+                    nonOwnedPlaylists.put(playlist);
+                }
+            }
+        }
+
+        JSONObject response = new JSONObject();
+        response.put("items", nonOwnedPlaylists);
+        return response;
     }
 
     @Override
