@@ -1,9 +1,10 @@
 package TestRoulette;
 
+import api.SpotifyInteractor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class MockSpotifyInteractor {
+public class MockSpotifyInteractor extends SpotifyInteractor {
     public JSONObject getUserPlaylists(String userId, int limit, int offset) {
         JSONObject response = new JSONObject();
 
@@ -22,6 +23,31 @@ public class MockSpotifyInteractor {
             case "friend4":
                 response.put("items", new JSONArray().put(
                         new JSONObject().put("id", "playlist3"))); // Playlist exists but no songs
+                break;
+        }
+        return response;
+    }
+
+    public JSONObject getPlaylistItems(String playlistId, int limit, int offset) {
+        JSONObject response = new JSONObject();
+
+        switch (playlistId) {
+            case "playlist1":
+                response.put("items", new JSONArray().put(
+                        new JSONObject().put("track", new JSONObject()
+                                .put("name", "Song 1")
+                                .put("artists", new JSONArray().put(
+                                        new JSONObject().put("name", "Artist 1"))))));
+                break;
+            case "playlist2":
+                response.put("items", new JSONArray().put(
+                        new JSONObject().put("track", new JSONObject()
+                                .put("name", "Song 2")
+                                .put("artists", new JSONArray().put(
+                                        new JSONObject().put("name", "Artist 2"))))));
+                break;
+            case "playlist3":
+                response.put("items", new JSONArray()); // Playlist exists but no songs
                 break;
         }
         return response;
