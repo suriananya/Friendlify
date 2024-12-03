@@ -1,6 +1,7 @@
 package TestRoulette;
 
 import entities.Song;
+import org.json.JSONObject;
 import org.junit.Test;
 import useCase.Roulette.SurpriseMeInteractor;
 import java.util.List;
@@ -53,6 +54,43 @@ public class TestSurpriseMeInteractor {
             fail("Expected a RuntimeException when no valid songs are found.");
         } catch (RuntimeException e) {
             assertEquals("No tracks found in friends' playlists.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testFriendWithNullPlaylists() {
+        // Friend with null playlists
+        MockSpotifyInteractor nullPlaylistSpotifyInteractor = new MockSpotifyInteractor() {
+            @Override
+            public JSONObject getUserPlaylists(String userId, int limit, int offset) {
+                return new JSONObject().put("items", JSONObject.NULL); // Simulating null playlists
+            }
+        };
+        SurpriseMeInteractor interactor = new SurpriseMeInteractor(nullPlaylistSpotifyInteractor, mockUserProfile);
+
+        try {
+            interactor.getRandomSongFromFriends();
+            fail("Expected a RuntimeException when no valid playlists are found.");
+        } catch (RuntimeException e) {
+            assertEquals("No tracks found in friends' playlists.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testExceptionHandling() {
+        MockSpotifyInteractor exceptionSpotifyInteractor = new MockSpotifyInteractor() {
+            @Override
+            public JSONObject getUserPlaylists(String userId, int limit, int offset) {
+                throw new RuntimeException("Simulated exception");
+            }
+        };
+        SurpriseMeInteractor interactor = new SurpriseMeInteractor(exceptionSpotifyInteractor, mockUserProfile);
+
+        try {
+            interactor.getRandomSongFromFriends();
+            fail("Expected a RuntimeException when an exception occurs in the interactor.");
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().contains("No tracks found in friends' playlists."));
         }
     }
 }
