@@ -33,5 +33,9 @@ public class TestSurpriseMeInteractor {
         assertNotNull("The song should not be null.", randomSong);
     }
 
-
+    @Test
+    public void testPlaylistWithNoSongs() {
+        Song randomSong = surpriseMeInteractor.getRandomSongFromFriends();
+        assertNotNull("The song should not be null.", randomSong);
+    }
 }
