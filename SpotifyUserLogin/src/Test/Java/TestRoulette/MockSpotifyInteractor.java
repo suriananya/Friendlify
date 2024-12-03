@@ -5,6 +5,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class MockSpotifyInteractor extends SpotifyInteractor {
+
+    @Override
     public JSONObject getUserPlaylists(String userId, int limit, int offset) {
         JSONObject response = new JSONObject();
 
@@ -28,6 +30,7 @@ public class MockSpotifyInteractor extends SpotifyInteractor {
         return response;
     }
 
+    @Override
     public JSONObject getPlaylistItems(String playlistId, int limit, int offset) {
         JSONObject response = new JSONObject();
 
