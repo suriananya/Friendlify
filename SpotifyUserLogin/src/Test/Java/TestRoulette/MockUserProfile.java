@@ -2,7 +2,7 @@ package TestRoulette;
 
 import api.SpotifyInteractor;
 import entities.users.UserProfile;
-import java.util.Arrays;
+
 import java.util.List;
 
 public class MockUserProfile extends UserProfile {
@@ -10,6 +10,7 @@ public class MockUserProfile extends UserProfile {
 
     public MockUserProfile(SpotifyInteractor interactor) {
         super(interactor);
+        this.mockFriends = List.of("friend1", "friend2", "friend3", "friend4");
     }
 
     public void setMockFriends(List<String> mockFriends) {
@@ -18,6 +19,6 @@ public class MockUserProfile extends UserProfile {
 
     @Override
     public List<String> getFriendsList(String type) {
-        return mockFriends != null ? mockFriends : Arrays.asList("friend1", "friend2", "friend3", "friend4");
+        return List.of("friend1", "friend2", "friend3", "friend4");
     }
 }
