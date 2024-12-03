@@ -26,4 +26,12 @@ public class TestSurpriseMeInteractor {
                 randomSong.getArtist().equals("Artist 1") || randomSong.getArtist().equals("Artist 2")
         );
     }
+
+    @Test
+    public void testFriendWithNoPlaylists() {
+        Song randomSong = surpriseMeInteractor.getRandomSongFromFriends();
+        assertNotNull("The song should not be null.", randomSong);
+    }
+
+
 }
