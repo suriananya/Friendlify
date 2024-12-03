@@ -38,8 +38,10 @@ public class TestSurpriseMeInteractor {
 
     @Test
     public void testPlaylistWithNoSongs() {
+        mockUserProfile.setMockFriends(Arrays.asList("friend4"));
         Song randomSong = surpriseMeInteractor.getRandomSongFromFriends();
         assertNotNull("The song should not be null.", randomSong);
+        assertNotNull("The song should not be null when other playlists have valid songs.", randomSong);
     }
 
     @Test
