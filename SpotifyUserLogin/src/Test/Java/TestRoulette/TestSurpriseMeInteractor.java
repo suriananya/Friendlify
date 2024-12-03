@@ -3,6 +3,8 @@ package TestRoulette;
 import entities.Song;
 import org.junit.Test;
 import useCase.Roulette.SurpriseMeInteractor;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -37,5 +39,18 @@ public class TestSurpriseMeInteractor {
     public void testPlaylistWithNoSongs() {
         Song randomSong = surpriseMeInteractor.getRandomSongFromFriends();
         assertNotNull("The song should not be null.", randomSong);
+    }
+
+    @Test
+    public void testNoValidSongsFound() {
+        MockUserProfile mockEmptyProfile = new MockUserProfile(mockSpotifyInteractor) {
+
+            public List<String> getFriendsList(String type) {
+                return Arrays.asList("friend3", "friend4");
+            }
+        };
+
+        SurpriseMeInteractor emptyInteractor = new SurpriseMeInteractor(mockSpotifyInteractor, mockEmptyProfile);
+        emptyInteractor.getRandomSongFromFriends();
     }
 }
